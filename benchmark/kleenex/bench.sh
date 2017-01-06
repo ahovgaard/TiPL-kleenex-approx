@@ -1,19 +1,29 @@
 #!/bin/bash
 BIN=./msc-peter/.stack-work/dist/x86_64-linux/Cabal-1.22.4.0/build/kexc/kexc
-OUT=kleenex.out
+K=2
+
+echo "Generating approximate kleenex programs..."
+for ((i=0;i<K;i++)); do
+  ./gen_kleenex.sh template_short.txt $i > short$i.kex
+  ./gen_kleenex.sh template_repetitions.txt $i > repetitions$i.kex
+done
 
 echo "Compilling approximate kleenex programs..."
-for i in {0..2}
-do
-  [ -f "pat$i" ] || $BIN compile pat$i.kex --metric Hamming --out pat$i
-  #echo -n "$i "
+for ((i=0;i<K;i++)); do
+  echo "short$i.kex"
+  [ -f "short$i" ] || $BIN compile short$i.kex --metric Hamming --out short$i
+
+  echo "repetitions$i.kex"
+  [ -f "repetitions$i" ] || $BIN compile repetitions$i.kex --metric Hamming --out repetitions$i
 done
-echo
 
 echo "Running..."
-for i in {0..2}
-do
+for ((i=0;i<K;i++)); do
   echo -n $i ' '
-  #/usr/bin/time -f "%e" cat ../hg18/chr1.fa | ./pat$i > /dev/null
-  /usr/bin/time -f "%e" ./pat$i < ../hg18/chr1.fa > /dev/null
-done &> $OUT
+  /usr/bin/time -f "%e" ./short$i < ../hg18/chr1.fa > /dev/null
+done &> short.out
+
+for ((i=0;i<K;i++)); do
+  echo -n $i ' '
+  /usr/bin/time -f "%e" ./repetitions$i < ../hg18/chr1.fa > /dev/null
+done &> repetitions.out
