@@ -1,0 +1,13 @@
+Options for compiling the source kex code:
+
+--ite :: bool
+    Use iterative approximation
+    default: false
+    
+--metric :: LCS|Hamming|Levenshtein
+    Error metric used for approximation
+    default: LCS
+
+--approxmode :: correction|matching|explicit
+    Output mode when doing approximate matching
+    default: correction

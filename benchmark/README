@@ -1,0 +1,11 @@
+
+Dandan:
+I added the 'fasta_generate' and 'patterns' directoies:
+
+. fasta_generate: generate random DNA sequence, can be used as patterns or texts for
+  our tests. The chromesome files are aslo OK, but they contain both upper and lower
+  case characters.
+
+. patterns: the test patterns for all the four tools
+
+Let me know if this has any problems.
