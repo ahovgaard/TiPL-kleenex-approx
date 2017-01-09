@@ -1,0 +1,2 @@
+main := (data<%k%> "+" | ~/./)*
+data := /GCCCAGAGA/ | /ACTTTCAGGA/

@@ -1,0 +1,26 @@
+Generate and write random DNA sequences
+
+The output file has three sections. The last section can be used as a random DNA sequence.
+
+The C code is from:
+https://benchmarksgame.alioth.debian.org/u64q/program.php?test=fasta&lang=gcc&id=7
+(Other language versions can be found on the website, e.g., a more readable python version:  https://benchmarksgame.alioth.debian.org/u64q/program.php?test=fasta&lang=python3&id=3)
+
+
+MAKE:
+/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -std=c99 -mfpmath=sse -msse3 -fopenmp fasta.gcc-7.c -o fasta.gcc-7.gcc_run
+rm fasta.gcc-7.c
+0.16s to complete and log all make actions
+
+COMMAND LINE: (the argument 2500000 specifies the size of the generated file)
+./fasta.gcc-7.gcc_run 25000000 
+
+(TRUNCATED) PROGRAM OUTPUT:
+>ONE Homo sapiens alu
+GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGGGAGGCCGAGGCGGGCGGA
+TCACCTGAGGTCAGGAGTTCGAGACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACT
+AAAAATACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAG
+GCTGAGGCAGGAGAATCGCTTGAACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCG
+CCACTGCACTCCAGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAAGGCCGGGCGCGGT
+GGCTCACGCCTGTAATCCCAGCACTTTGGGAGGCCGAGGCGGGCGGATCACCTGAGGTCA
+...
