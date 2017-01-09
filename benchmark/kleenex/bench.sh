@@ -7,14 +7,14 @@ declare -a progs=("short" "long" "alternation" "repetitions")
 echo "Generating approximate kleenex programs..."
 for prog in "${progs[@]}"; do
   echo "  $prog"
-  for ((i=0;i<K;i++)); do
+  for ((i=0;i<=K;i++)); do
     ./gen_kleenex.sh template_$prog.txt $i > $prog$i.kex
   done
 done
 
 echo "Compilling approximate kleenex programs..."
 for prog in "${progs[@]}"; do
-  for ((i=0;i<K;i++)); do
+  for ((i=0;i<=K;i++)); do
     echo "$prog$i.kex"
     [ -f "$prog$i" ] || $BIN compile $prog$i.kex --metric Hamming --out $prog$i
   done
@@ -23,7 +23,7 @@ done
 echo "Running..."
 for prog in "${progs[@]}"; do
   echo "  $prog"
-  for ((i=0;i<K;i++)); do
+  for ((i=0;i<=K;i++)); do
     echo -n $i ' '
     /usr/bin/time -f "%e" ./$prog$i < ../hg18/chr1.fa > /dev/null
   done &> kleenex_$prog.out
