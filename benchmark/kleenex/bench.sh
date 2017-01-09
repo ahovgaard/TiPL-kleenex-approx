@@ -1,5 +1,6 @@
 #!/bin/bash
 BIN=./msc-peter/.stack-work/dist/x86_64-linux/Cabal-1.22.4.0/build/kexc/kexc
+DATA=../hg18/chr1_nonl.fa
 K=2
 
 declare -a progs=("short" "long" "alternation" "repetitions")
@@ -25,6 +26,6 @@ for prog in "${progs[@]}"; do
   echo "  $prog"
   for ((i=0;i<=K;i++)); do
     echo -n $i ' '
-    /usr/bin/time -f "%e" ./$prog$i < ../hg18/chr1.fa > /dev/null
+    /usr/bin/time -f "%e" ./$prog$i < $DATA > /dev/null
   done &> kleenex_$prog.out
 done
