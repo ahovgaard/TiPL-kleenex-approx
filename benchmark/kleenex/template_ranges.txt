@@ -1,0 +1,3 @@
+main := (pat <%k%> "+" | ~/./)*
+pat := dna{5,15} /TGCAAGCGTTAAT/
+dna := /[ACGT]/

@@ -2,7 +2,7 @@
 BIN=./msc-peter/.stack-work/dist/x86_64-linux/Cabal-1.22.4.0/build/kexc/kexc
 K=2
 
-declare -a progs=("short" "long" "alternation" "repetitions")
+declare -a progs=("short" "long" "alternation" "repetitions" "ranges" "incr-length")
 
 echo "Generating approximate kleenex programs..."
 for prog in "${progs[@]}"; do
