@@ -3,7 +3,7 @@ BIN=./msc-peter/.stack-work/dist/x86_64-linux/Cabal-1.22.4.0/build/kexc/kexc
 DATA=../hg18/chr1_nonl.fa
 K=2
 
-declare -a progs=("short" "long" "alternation" "repetitions" "ranges" "incr-length")
+declare -a progs=("short" "long" "alternation" "repetitions" "ranges")
 
 echo "Generating approximate kleenex programs..."
 for prog in "${progs[@]}"; do
@@ -13,6 +13,17 @@ for prog in "${progs[@]}"; do
   done
 done
 
+# The increasing length case is different because it generates many more kex files.
+# Note that the length of patterns also increases the compiling time dramatically
+incrprog="incr-length"
+echo incrprog
+for ((i=0;i<=K;i++)); do
+    for((l=0;l<=300;l+=50)) do  
+       ./gen_kleenex_${incrprog}.sh template_${incrprog}.txt $i $l > ${incrprog}-${l}_$i.kex
+    done
+done       
+
+
 echo "Compilling approximate kleenex programs..."
 for prog in "${progs[@]}"; do
   for ((i=0;i<=K;i++)); do
@@ -20,6 +31,15 @@ for prog in "${progs[@]}"; do
     [ -f "$prog$i" ] || $BIN compile $prog$i.kex --metric Hamming --out $prog$i
   done
 done
+
+# incr-length case
+for ((i=0;i<=K;i++)); do
+    for((l=0;l<=300;l+=50)) do  
+       echo "${incrprog}-${l}_${i}.kex"
+       [ -f "${incrprog}-${l}_${i}" ] || $BIN compile ${incrprog}-${l}_$i.kex --metric Hamming --out ${incrprog}-${l}_${i}
+    done
+done       
+
 
 echo "Running..."
 for prog in "${progs[@]}"; do
@@ -29,3 +49,12 @@ for prog in "${progs[@]}"; do
     /usr/bin/time -f "%e" ./$prog$i < $DATA > /dev/null
   done &> kleenex_$prog.out
 done
+
+
+# incr-length case
+for ((i=0;i<=K;i++)); do
+    for((l=0;l<=300;l+=50)) do
+       echo -n $i ' '
+       /usr/bin/time -f "%e" ./${incrprog}-${l}_$i < $DATA > /dev/null
+    done &> kleenex_${incrprog}-${l}$_${i}.out
+done       
