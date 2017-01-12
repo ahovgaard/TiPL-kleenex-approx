@@ -1,2 +1,2 @@
 main := (pat | ~/./)*
-pat  := /GGGTGCAAGCGTTAAT/<%k%>{50,350} /AGCGTGGGGAGCAAAC/<%k%>
+pat  := /GGGTGC/<%k%>{10,50} /AGCGT/<%k%>
