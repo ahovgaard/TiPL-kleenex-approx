@@ -1,0 +1,92 @@
+% {{{ Preamble ----------------------------------------------------------------
+\documentclass[a4paper,11pt]{article}
+
+% encodings, fonts etc.
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% page layout
+%\usepackage{a4wide}
+
+% math packages
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+
+% graphics, colors, figures etc.
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage[export]{adjustbox}
+\usepackage{color}
+
+% misc. packages
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{fancyvrb}
+
+% code etc.
+\usepackage{listings}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{%
+  backgroundcolor=\color{white},
+  basicstyle=\footnotesize\ttfamily,
+  breakatwhitespace=true,
+  breaklines=true,
+  captionpos=t,
+  commentstyle=\color{mygreen},
+  extendedchars=true,
+  keepspaces=true,
+  keywordstyle=\color{blue},
+  numbers=none,
+  numbersep=8pt,
+  numberstyle=\tiny\color{mygray},
+  rulecolor=\color{black},
+  showstringspaces=false,
+  showtabs=false,
+  stepnumber=1,
+  stringstyle=\color{mymauve},
+  frame=single,
+  frameround=tttt,
+  %frame=tb,
+  belowskip=-0.2\baselineskip,
+}
+
+% mathematics, theorems etc.
+\newtheorem*{proposition}{Proposition}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+
+% change \qed symbol to black square
+\renewcommand\qedsymbol{$\blacksquare$}
+
+% various useful commands
+\newcommand{\file}[1]{\texttt{#1}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\def\LRA{\hspace{1em}\Leftrightarrow\hspace{1em}}
+
+\newcommand{\type}[1]{\texttt{#1}}
+\newcommand{\fun}[1]{\texttt{#1}}
+
+% title page
+\title{Topics in Programming Languages}
+\author{}
+\date{\today}
+% }}} -------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle
+
+\input{introduction.tex}
+\input{background.tex}
+\input{experiments.tex}
+\input{survey.tex}
+\input{analysis.tex}
+\input{conclusion.tex}
+
+\end{document}
