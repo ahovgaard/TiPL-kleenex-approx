@@ -1,0 +1,23 @@
+// short
+main := (/TGCAAGCGTTAAT/<%k%> "+" | ~/./)*
+
+// long
+main := (data<%k%> "+" | ~/./)*
+data := /GCCCAGAGAACTTTCAGGATGACACCAGCAAGG/
+
+// alternation
+main := (data<%k%> "+" | ~/./)*
+data := /GCCCAGAGA/ | /ACTTTCAGGA/
+
+// ranges
+main := (pat <%k%> "+" | ~/./)*
+pat := dna{5,15} /TGCAAGCGTTAAT/
+dna := /[ACGT]/
+
+// repetitions
+main := (pat | ~/./)*
+pat  := /GGGTGC/<%k%>{10,50} /AGCGT/<%k%>
+
+// incr-length
+main := (pat <%k%> "+" | ~/./)*
+pat := /./{%l%} /TGCAAGCGTTAAT/
