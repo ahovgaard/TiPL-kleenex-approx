@@ -50,9 +50,9 @@ $\epsilon$-transitions.
 
 \begin{definition}[NFST]
   A \emph{normalized finite state transducer} is a deterministic FST,
-  $T = (\Sigma[\epsilon,\epsilon_0,\epsilon_1], \Gamma, q^s, q^f, \Delta)$,
-  with the constraint that $\forall q \in Q$, $q$ is either a choice state, a
-  skip state, a symbol state, or the final state.
+  $T = (\Sigma[\epsilon_0,\epsilon_1], \Gamma, q^s, q^f, \Delta)$, with the
+  constraint that $\forall q \in Q$, $q$ is either a choice state, a skip
+  state, a symbol state, or the final state.
 \end{definition}
 
 The notions of choice, skip, or symbol states are perhaps best conveyed by
@@ -99,10 +99,10 @@ illustration, as shown in Figure~\ref{fig:nfst-states}.
   \label{fig:nfst-states}
 \end{figure}
 
-
-
-
-
+Thus, the set of symbols that any state has transitions on, i.e. the support of
+the state, is either just $\epsilon$, exactly $\{\epsilon_0, \epsilon_1\}$,
+exactly one $a \in \Sigma$, or $\emptyset$ in the case of the final
+state. % Therefore, an NFST is deterministic...
 
 
 

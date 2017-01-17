@@ -6,8 +6,28 @@ Visualization.
 
 \subsection{Improving kleenex}
 
-Counters, implemented as optimization in the implementation vs. updating the
-automata models.
+% Counters, implemented as optimization in the implementation vs. updating the
+% automata models.
+
+In his bachelor's thesis~\cite{enevoldsen2015pattern}, Sune Enevoldsen uses the
+concept of a tagged automaton, based on work by Ville
+Laurikari~\cite{laurikari2000nfas, laurikari2001efficient} and inspired by
+Levenshtein automata~\cite{schulz2002fast}, to do approximate regular string
+matching.
+
+A tagged NFA is an NFA extended with a set of tags which may be set or modified
+on each transition in the transition relation. The idea is to use these tags as
+counters which keep track of the allowed number of errors, e.g.  insertions,
+deletion, and substitutions.
+
+% Thus, the tagged automata for a given regular expression $RE$ will accept the
+% strings in $\mathcal{L}(RE)$ as well as any string that is within a certain
+% error distance of a string in $\mathcal{L}(RE)$.
+
+
+
+
+
 
 %%% Local Variables:
 %%% mode: latex
