@@ -37,7 +37,7 @@ transition relation and the transitions in the drawn diagram of the transducer:
 \]
 
 In an NFA, multiple paths may lead to an accepting state for a given input
-string, but regardsless of which accepting path is chosen, the ouput is the
+string, but regardless of which accepting path is chosen, the ouput is the
 same. In an FST, on the other hand, the path determines the transduced output,
 thus the same input string may produce entirely different outputs depending on
 the path chosen.
@@ -101,11 +101,78 @@ illustration, as shown in Figure~\ref{fig:nfst-states}.
 
 Thus, the set of symbols that any state has transitions on, i.e. the support of
 the state, is either just $\epsilon$, exactly $\{\epsilon_0, \epsilon_1\}$,
-exactly one $a \in \Sigma$, or $\emptyset$ in the case of the final
-state. % Therefore, an NFST is deterministic...
+exactly one $a \in \Sigma$, or $\emptyset$ in the case of the final state. The
+idea is that $\epsilon_0$ and $\epsilon_1$ imposes an ordering on the
+nondeterministic transitions of the choice states, with $\epsilon_0$ being
+preferred over $\epsilon_1$. In order to define this more precisely, we need a
+few definitions.
+
+A \emph{path} in a transducer is a sequence of consecutive
+transitions
+\[
+  p_0 \xrightarrow{a_1/b_1} p_1 \xrightarrow{a_2/b_2} \dots
+  \xrightarrow{a_n/b_n} p_n
+\]
+which can be written more compactly as
+\[
+  p_0 \xrightarrow{a/b} p_n
+\]
+where $a = a_1a_2 \dots a_n$ is the input string and $b = b_1b_2 \dots b_n$ is
+the output string of the path.
+
+Define a mapping from $\Sigma[\epsilon, \epsilon_0, \epsilon_1]$ to
+$\mathbf{2}[\epsilon]$, that is, the binary alphabet with $\epsilon$. This
+naturally extends to a mapping from strings in the extended input alphabet to
+strings of bits. The \emph{greedy leftmost disambiguation strategy} of the NFST
+is the strategy that chooses the path with the lexicographically least input
+bit string.
+
+% Thus, if we define a mapping from
+% $\Sigma[\epsilon, \epsilon_0, \epsilon_1]$ to the binary alphabet with
+% $\epsilon$, $\mathbf{2}[\epsilon]$, i.e. strings of bits, then the \emph{greedy
+%   leftmost disambiguation strategy} of the NFST is the strategy that chooses
+% the path with the lexicographically least bit string.
+
+% \[
+%   |\epsilon_0| = 0, \quad |\epsilon_1| = 1, \quad |a| = \epsilon, \forall a
+%   \in \Sigma[\epsilon]
+% \]
+
+\subsection{Kleenex}
+
+As mentioned previously, Kleenex is a domain-specific programming language for
+specifying finite transducers, and specifically the core language directly
+encodes NFSTs.
+
+\subsubsection{Core Kleenex}
+
+\begin{definition}[Core Kleenex]
+  A core Kleenex term is  \dots
+\end{definition}
 
 
+\subsection{Approximate matching and transduction in Kleenex}
 
+Peter Troelsen describes, in his master's
+thesis~\cite{troelsen2016approximate}, an approach to approximate transduction
+using Kleenex, by rewriting of core Kleenex programs. This is done by
+expressing approximate matching as exact matching through program
+transformation. A core Kleenex term that accepts strings of some language $L$
+is transformed to another term which accepts strings from $L$ as well as any
+string with a distance of at most $k$ to some string in $L$, given some
+distance metric.
+
+Troelsen's approach is purely a transformation of the core language, so the
+rest of the compilation process and optimizations of the Kleenex compiler
+remains unchanged. This means that the transformed transducer will also be
+compiled to a streaming string transducer, thus harnessing the high performance
+at runtime, but also sufferring during determinization of the transducer. For
+this reason, one can speculate that an implementation which works at a deeper
+level of the compilation process may be able to optimize things and reduce the
+number of generated states and transitions.
+
+% for instance by counting the errors instead of encoding the number of allowed
+% errors directly in the program grammar
 
 
 %%% Local Variables:
