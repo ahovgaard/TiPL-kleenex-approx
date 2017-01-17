@@ -60,6 +60,8 @@
 \newtheorem*{proposition}{Proposition}
 \newtheorem*{lemma}{Lemma}
 \newtheorem*{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 
 % change \qed symbol to black square
 \renewcommand\qedsymbol{$\blacksquare$}
@@ -72,15 +74,25 @@
 \newcommand{\type}[1]{\texttt{#1}}
 \newcommand{\fun}[1]{\texttt{#1}}
 
+% tikz
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,positioning}
+
+
 % title page
-\title{Topics in Programming Languages}
-\author{}
-\date{\today}
+\title{Kleenex-based approximate pattern matching for DNA analysis}
+\author{Anders Kiel Hovgaard \and Daniel Lundberg Pedersen \and Dandan Xue}
+\date{January 23, 2017}
 % }}} -------------------------------------------------------------------------
 
 \begin{document}
 
 \maketitle
+
+\begin{abstract}
+  \dots
+\end{abstract}
 
 \input{introduction.tex}
 \input{background.tex}
@@ -89,4 +101,13 @@
 \input{analysis.tex}
 \input{conclusion.tex}
 
+\newpage
+\bibliographystyle{plain}
+\bibliography{tipl}
+
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,1 +1,114 @@
 \section{Background}
+
+This section describes the main background theory of the Kleenex language and
+its application to approximate string matching.
+
+\subsection{Transducers}
+
+Kleenex is a domain-specific language for expressing transducers. The concept
+of a transducer extends that of a finite automaton to also include output, that
+is, a finite automaton either accepts or rejects a string, whereas a transducer
+produces an output string in a language over a given output alphabet.
+
+First we define the notion of a finite state transducer, which is essentially
+just a nondeterministic finite automaton (NFA) which can also output a symbol
+on each transition.
+
+\begin{definition}[FST]
+  A \emph{finite state transducer} $\mathcal{T}$ over an input alphabet
+  $\Sigma$ and an output alphabet $\Gamma$ is a structure
+  $(\Sigma, \Gamma, Q, q^s, q^f, \Delta)$, where
+  \begin{itemize}
+      \item $Q$ is a finite set of states,
+      \item $q^s, q^f \in Q$ are the initial and final states,
+        respectively, and
+      \item $\Delta \subseteq Q \times \Sigma[\epsilon] \times
+        \Gamma[\epsilon] \times Q$ is the transition relation.
+  \end{itemize}
+\end{definition}
+
+Here, $\Sigma[\epsilon]$ denotes the alphabet $\Sigma$ extended with the empty
+string $\epsilon$.
+
+Intuitively, there is the following correspondence between the elements of the
+transition relation and the transitions in the drawn diagram of the transducer:
+\[
+  (q, s, t, q') \in \Delta \quad \Leftrightarrow \quad q \xrightarrow{s/t} q'
+\]
+
+In an NFA, multiple paths may lead to an accepting state for a given input
+string, but regardsless of which accepting path is chosen, the ouput is the
+same. In an FST, on the other hand, the path determines the transduced output,
+thus the same input string may produce entirely different outputs depending on
+the path chosen.
+
+In order to disambiguate between different transductions of the same input
+string, we introduce the notion of a normalized FST. To facilitate this, we
+also introduce two new symbols $\epsilon_0$ and $\epsilon_1$. Both denote the
+empty string, but they serve to distinguish between nondeterministic
+$\epsilon$-transitions.
+
+\begin{definition}[NFST]
+  A \emph{normalized finite state transducer} is a deterministic FST,
+  $T = (\Sigma[\epsilon,\epsilon_0,\epsilon_1], \Gamma, q^s, q^f, \Delta)$,
+  with the constraint that $\forall q \in Q$, $q$ is either a choice state, a
+  skip state, a symbol state, or the final state.
+\end{definition}
+
+The notions of choice, skip, or symbol states are perhaps best conveyed by
+illustration, as shown in Figure~\ref{fig:nfst-states}.
+
+\begin{figure}[!ht]
+  \centering
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=1.0cm,
+      semithick, main/.style={circle,draw,minimum width=10pt}]
+        \node[main] (q0) {$ $};
+        \node       (q1) [right = of q0] {};
+        \node       (q2) [below right = of q0] {};
+        \path (q0) edge node {$\epsilon_0/\cdot$} (q1)
+              (q0) edge node [below left = -2mm, swap]
+                   {$\epsilon_1/\cdot$} (q2);
+    \end{tikzpicture}
+    \caption{A choice state.}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=1.0cm,
+        semithick, main/.style={circle,draw,minimum width=10pt}]
+        \node[main] (q0) {$ $};
+        \node       (q1) [right = of q0] {};
+        \path (q0) edge node        {$\epsilon/\cdot$} (q1);
+    \end{tikzpicture}
+    \caption{A skip state.}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=1.0cm,
+      semithick, main/.style={circle,draw,minimum width=10pt}]
+        \node[main] (q0) {$ $};
+        \node       (q1) [right = of q0] {};
+        \path (q0) edge node {$a/\cdot$} (q1);
+    \end{tikzpicture}
+    \caption{A symbol state.}
+  \end{subfigure}
+  \caption{Illustration of choice states, skip states, and symbol states.}
+  \label{fig:nfst-states}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
