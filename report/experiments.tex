@@ -4,6 +4,17 @@
 
 
 \subsection{Experiment setup and benchmark description}
+The experiments where run on the \texttt{gpu02} machine
+\begin{description}
+    \item[CPU] Intel Xeon E5-2650 v2 (2.60 GHz)
+    \item[RAM] 128 GB
+\end{description}
+
+The data set used for the benchmark is from
+\url{ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz}
+and is 2.9 GBs uncompressed, for most of the benchmarks we used a file where we
+stripped the newlines, so they would not count as an error, except for the
+nrgrep trails since it could not handle long lines.
 
 
 \subsection{Results}
