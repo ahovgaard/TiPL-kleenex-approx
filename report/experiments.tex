@@ -1,6 +1,25 @@
 \section{Experiments}
 
 \subsection{Introduction to the tools}
+\subsubsection{Python (\texttt{regex})}
+\texttt{regex} is the Python module intended to replace the \texttt{re} module
+at some point. It is a fairly fully fletched Regex module, that also supports
+approximate matching. Because of this and the ease of creating the necessary
+scripts we chose to include it in the benchmarks.
+
+\subsubsection{Approximate Kleenex}
+Approximate matching was introduced to Kleenex by P. Troelsen in his masters
+thesis\cite{approx-kex}.
+
+\subsubsection{Scan For Matches}
+Scan For Matches is a approximate matching tool specifically for DNA matching.
+It is written in C and has a bunch of DNA specific niceties that the other
+tools don't, such as using FASTA files directly, and reverse complements
+(matching a reversed and DNA complemented pattern).
+
+\subsubsection{NR-grep}
+NR-grep\cite{nrgrep} is a fast pattern matching tool, similar to \texttt{grep},
+that also supports approximate matching.
 
 
 \subsection{Experiment setup and benchmark description}
@@ -14,7 +33,7 @@ The data set used for the benchmark is from
 \url{ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz}
 and is 2.9 GBs uncompressed, for most of the benchmarks we used a file where we
 stripped the newlines, so they would not count as an error, except for the
-nrgrep trails since it could not handle long lines.
+nrgrep trails since it could not handle lines longer than $2^{16}$.
 
 
 \subsection{Results}
