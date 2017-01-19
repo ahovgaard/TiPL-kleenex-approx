@@ -19,7 +19,8 @@ tools don't, such as using FASTA files directly, and reverse complements
 
 \subsubsection{NR-grep}
 NR-grep~\cite{navarro2001nr} is a fast pattern matching tool, similar to
-\texttt{grep}, that also supports approximate matching.
+\texttt{grep}, that is made to be effecient for complex pattern, and it also
+supports approximate matching.
 
 
 \subsection{Experiment setup and benchmark description}
@@ -33,8 +34,26 @@ The data set used for the benchmark is from
 \url{ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz}
 and is 2.9 GBs uncompressed, for most of the benchmarks we used a file where we
 stripped the newlines, so they would not count as an error, except for the
-nrgrep trails since it could not handle lines longer than $2^{16}$.
+NR-grep trails since it could not handle lines longer than $2^{16}$.
 
+\subsubsection{Patterns used}
+We have made a number of patterns to benchmark the different tools, they are
+represented here in the Kleenex syntax, with $k$ being the allowed number of
+substitutions going from 0 up to 5 (if possible). They are not all possible in
+all of the tools, only Kleenex has support for all the patterns.
+
+\texttt{/TGCAAGCGTTAAT/<$k$>} - Short - A simple fairly short pattern with
+nothing but a character string.
+
+\texttt{/GCCCAGAGAACTTTCAGGATGACACCAGCAAGG/<$k$>} - Long - A longer simple
+pattern it is only 33 characters long because it was the longest we could
+compile a Kleenex program for with $k \leq 2$
+
+\texttt{(/GCCCAGAGA/|/ACTTTCAGGA/)<$k$>} - Alternation - An alternation with a
+simple fairly short pattern on each side of the alternation.
+
+\texttt{(/[ACGT]/\{5,15\} /TGCAAGCGTTAAT/)<k>} - Ranges - A small pattern with
+a ranges of repetitions, followed by another fairly short pattern.
 
 \subsection{Results}
 
@@ -43,7 +62,7 @@ nrgrep trails since it could not handle lines longer than $2^{16}$.
   \includegraphics[width=0.9\textwidth]{images/short.png}
   \caption{Execution times for approximate Kleenex, NR-grep, Python's
     \texttt{regex} module, and \texttt{scan\_for\_matches}, when searching for
-    the pattern \texttt{/TGCAAGCGTTAAT/<k>} for $k=0..5$.}
+    the pattern \texttt{/TGCAAGCGTTAAT/<$k$>} for $k=0..5$.}
   \label{fig:short}
 \end{figure}
 
@@ -51,7 +70,7 @@ nrgrep trails since it could not handle lines longer than $2^{16}$.
   \centering
   \includegraphics[width=0.9\textwidth]{images/long.png}
   \caption{Execution times for the evaluated tools when searching for the
-    pattern \texttt{/GCCCAGAGAACTTTCAGGATGACACCAGCAAGG/<k>} for $k=0..5$.}
+    pattern \texttt{/GCCCAGAGAACTTTCAGGATGACACCAGCAAGG/<$k$>} for $k=0..5$.}
   \label{fig:long}
 \end{figure}
 
@@ -59,7 +78,7 @@ nrgrep trails since it could not handle lines longer than $2^{16}$.
   \centering
   \includegraphics[width=0.9\textwidth]{images/alternation.png}
   \caption{Execution times for the evaluated tools when searching for the
-    pattern \texttt{(/GCCCAGAGA/|/ACTTTCAGGA/)<k>} for $k=0..5$.}
+    pattern \texttt{(/GCCCAGAGA/|/ACTTTCAGGA/)<$k$>} for $k=0..5$.}
   \label{fig:alternation}
 \end{figure}
 
@@ -67,7 +86,7 @@ nrgrep trails since it could not handle lines longer than $2^{16}$.
   \centering
   \includegraphics[width=0.9\textwidth]{images/ranges.png}
   \caption{Execution times for the evaluated tools when searching for the
-    pattern \texttt{([ACGT]{5,15} /TGCAAGCGTTAAT/)<k>} for $k=0..5$.}
+    pattern \texttt{(/[ACGT]/\{5,15\} /TGCAAGCGTTAAT/)<$k$>} for $k=0..5$.}
   \label{fig:ranges}
 \end{figure}
 
