@@ -38,3 +38,41 @@ nrgrep trails since it could not handle lines longer than $2^{16}$.
 
 \subsection{Results}
 
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/short.png}
+  \caption{Execution times for approximate Kleenex, NR-grep, Python's
+    \texttt{regex} module, and \texttt{scan\_for\_matches}, when searching for
+    the pattern \texttt{/TGCAAGCGTTAAT/<k>} for $k=0..5$.}
+  \label{fig:short}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/long.png}
+  \caption{Execution times for the evaluated tools when searching for the
+    pattern \texttt{/GCCCAGAGAACTTTCAGGATGACACCAGCAAGG/<k>} for $k=0..5$.}
+  \label{fig:long}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/alternation.png}
+  \caption{Execution times for the evaluated tools when searching for the
+    pattern \texttt{(/GCCCAGAGA/|/ACTTTCAGGA/)<k>} for $k=0..5$.}
+  \label{fig:alternation}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/ranges.png}
+  \caption{Execution times for the evaluated tools when searching for the
+    pattern \texttt{([ACGT]{5,15} /TGCAAGCGTTAAT/)<k>} for $k=0..5$.}
+  \label{fig:ranges}
+\end{figure}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
