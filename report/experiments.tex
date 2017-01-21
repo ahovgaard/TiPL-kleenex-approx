@@ -41,11 +41,17 @@ The experiments where run on the \texttt{gpu02} machine.
     \item[Disk] KU network share.
 \end{description}
 
-The data set used for the benchmark is from
-\url{ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz}
-and is 2.9 GBs uncompressed, for most of the benchmarks we used a file where we
-stripped the newlines, so they would not count as an error, except for the
-NR-grep trails since it was not too happy about lines longer than $2^{16}$.
+The data set used for the benchmark is the reference sequence of the entire
+human genome from the 1000 Genomes
+project\footnote{\url{ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz}},
+which is 2.9 GBs uncompressed. For most of the tools in the benchmark, we used
+a file where we stripped the newlines, so they would not count as errors,
+except for the NR-grep trails since it was not too happy about lines longer
+than $2^{16}$. The data set was also converted to all capital letters in order
+to simplify the search patterns and enable a more fair comparison between
+general tools such as Kleenex and domain-specific tools such as
+\texttt{scan\_for\_matches}, which is likely better at handling variations in
+the data that are specific to the domain.
 
 \subsubsection{Patterns used}
 We have made a number of patterns to benchmark the different tools, they are
