@@ -2,21 +2,30 @@
 
 \subsection{Introduction to the tools}
 \subsubsection{Python (\texttt{regex})}
-\texttt{regex} is the Python module intended to replace the \texttt{re} module
-at some point. It is a fairly fully fletched Regex module, that also supports
+The \texttt{regex}\footnote{\url{https://pypi.python.org/pypi/regex}} Python
+module is intended to replace the current \texttt{re} module at some point. It
+is a fairly fully fledged regular expression module, that also supports
 approximate matching. Because of this and the ease of creating the necessary
-scripts we chose to include it in the benchmarks.
+scripts we chose to include it in the benchmarks. Unfortunately, there is
+little information, other that the source code, about the theoretical
+background or the inner workings of this implementation.
 
 \subsubsection{Approximate Kleenex}
-Approximate matching was introduced to Kleenex by P. Troelsen in his masters
-thesis~\cite{troelsen2016approximate}. And it accomplises this by rewriting the
-program rules to allow for errors in the match.
+Approximate matching was introduced to Kleenex by P. Troelsen in his master's
+thesis~\cite{troelsen2016approximate}. As discussed previously, this is
+accomplished by rewriting the core program terms to allow for a given number of
+errors in the match, that is, to express the approximate matching as exact
+matching.
 
 \subsubsection{Scan For Matches}
-Scan For Matches (SFM) is a approximate matching tool specifically for DNA
-matching.  It is written in C and has a bunch of DNA specific niceties that the
-other tools don't, such as using FASTA files directly, and reverse complements
-(matching a reversed and DNA complemented pattern).
+Scan For Matches\footnote{\url{http://blog.theseed.org/servers/2010/07/scan-for-matches.html}}
+(SFM)~\cite{dsouza1997searching} is an approximate pattern matching tool
+specifically designed for matching biological sequences such as DNA, RNA, and
+protein. It is written in C and has a bunch of nucleotide and protein specific
+niceties that the other tools do not, such as using FASTA files directly, and
+support for matching reverse complements (matching the DNA complement of a
+previously occurred subpattern in reverse, e.g. corresponding to an RNA hairpin
+loop).
 
 \subsubsection{NR-grep}
 NR-grep~\cite{navarro2001nr} is a fast pattern matching tool, similar to
