@@ -5,10 +5,11 @@ its application to approximate string matching.
 
 \subsection{Transducers}
 
-Kleenex is a domain-specific language for expressing transducers. The concept
-of a transducer extends that of a finite automaton to also include output, that
-is, a finite automaton either accepts or rejects a string, whereas a transducer
-produces an output string in a language over a given output alphabet.
+Kleenex~\cite{grathwohl2016kleenex,soholm2015ordered} is a domain-specific
+language for expressing transducers. The concept of a transducer extends that
+of a finite automaton to also include output, that is, a finite automaton
+either accepts or rejects a string, whereas a transducer produces an output
+string in a language over a given output alphabet.
 
 First we define the notion of a finite state transducer, which is essentially
 just a nondeterministic finite automaton (NFA) which can also output a symbol
@@ -27,6 +28,7 @@ on each transition.
   \end{itemize}
 \end{definition}
 
+\noindent
 Here, $\Sigma[\epsilon]$ denotes the alphabet $\Sigma$ extended with the empty
 string $\epsilon$.
 
@@ -35,6 +37,9 @@ transition relation and the transitions in the drawn diagram of the transducer:
 \[
   (q, s, t, q') \in \Delta \quad \Leftrightarrow \quad q \xrightarrow{s/t} q'
 \]
+That is, if $(q, s, t, q') \in \Delta$ then the transducer may transition from
+state $q$ to state $q'$ by consuming a symbol $s \in \Sigma[\epsilon]$ and
+outputting a symbol $t \in \Gamma[\epsilon]$.
 
 In an NFA, multiple paths may lead to an accepting state for a given input
 string, but regardless of which accepting path is chosen, the ouput is the
@@ -43,10 +48,10 @@ thus the same input string may produce entirely different outputs depending on
 the path chosen.
 
 In order to disambiguate between different transductions of the same input
-string, we introduce the notion of a normalized FST. To facilitate this, we
-also introduce two new symbols $\epsilon_0$ and $\epsilon_1$. Both denote the
-empty string, but they serve to distinguish between nondeterministic
-$\epsilon$-transitions.
+string, we introduce the notion of a normalized
+FST~\cite{grathwohl2016kleenex}. To facilitate this, we also introduce two new
+symbols $\epsilon_0$ and $\epsilon_1$. Both denote the empty string, but they
+serve to distinguish between nondeterministic $\epsilon$-transitions.
 
 \begin{definition}[NFST]
   A \emph{normalized finite state transducer} is a deterministic FST,
@@ -100,12 +105,13 @@ illustration, as shown in Figure~\ref{fig:nfst-states}.
 \end{figure}
 
 Thus, the set of symbols that any state has transitions on, i.e. the support of
-the state, is either just $\epsilon$, exactly $\{\epsilon_0, \epsilon_1\}$,
-exactly one $a \in \Sigma$, or $\emptyset$ in the case of the final state. The
-idea is that $\epsilon_0$ and $\epsilon_1$ imposes an ordering on the
-nondeterministic transitions of the choice states, with $\epsilon_0$ being
-preferred over $\epsilon_1$. In order to define this more precisely, we need a
-few more definitions.
+the state, is either just $\epsilon$ (for skip states), exactly
+$\{\epsilon_0, \epsilon_1\}$ (for choice states), exactly one $a \in \Sigma$
+(for symbol states), or $\emptyset$ in the case of the final state. The idea is
+that $\epsilon_0$ and $\epsilon_1$ imposes an ordering on the nondeterministic
+transitions of the choice states, with $\epsilon_0$ being preferred over
+$\epsilon_1$. In order to define this more precisely, we need a few more
+definitions.
 
 A \emph{path} in a transducer is a sequence of consecutive
 transitions
@@ -123,7 +129,7 @@ the output string of the path.
 Define a mapping from $\Sigma[\epsilon, \epsilon_0, \epsilon_1]$ to
 $\mathbf{2}[\epsilon]$, that is, the binary alphabet with $\epsilon$. This
 naturally extends to a mapping from strings over the extended input alphabet to
-strings of bits. The \emph{greedy disambiguation strategy} of the NFST is the
+strings of bits. The \emph{greedy disambiguation strategy} of an NFST is the
 strategy that chooses the path with the lexicographically least input bit
 string.
 
@@ -139,6 +145,8 @@ string.
 % \]
 
 % TODO: consider including example
+
+% TODO: consider talking about oracle and action automata
 
 
 \subsection{Kleenex}
