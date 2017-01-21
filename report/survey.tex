@@ -1,3 +1,17 @@
 \section{Survey of approximate matching techniques}
+One of the classical solutions to approximate matching problem is to use dynamic programming. This mathod is simple and easy to be implemented by programming. The tools we experiment, such as Python and Scan\_for\_matches(SFM) are based on this mathod.
 
-Survey of techniques used by kleenex, sfm, NR-grep, Python's regex etc.
+Another classical one is automata simulation. The algortihm BNDM  (we will explain later) over which NR-grep is built is basically a simulation of an NFA. 
+
+\subsection{NR-grep}
+From the experiment results showed in the previous section, we can say in general NR-grep has the best performance in our various test cases. This is not surprising because NR-grep implemented different efficient algorithms for various pattern matching problems as well as has a good software design. From this tool's perspective, the patterns are classified into three levels: simple patterns, extended patterns and regular experssions. Different algorithms are applied to different levels of patterns to make sure that the problem can be solved in the most efficient way. 
+
+We now show the idea of how NR-grep solves the approximate matching in an efficient way. The name of this tool comes from "nondeterministic reverse $grep$", which indicates that this tool can sim
+
+
+\subsection{Python(regex)}
+
+\subsection{Scan For Matches}
+
+
+\subsection{Approximate Kleenex}

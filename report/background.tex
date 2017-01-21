@@ -170,7 +170,12 @@ Kleenex definition maps to one or two transitions in the transducer.
 
 
 \subsection{Approximate matching and transduction in Kleenex}
+\subsubsection{Approximate pattern matching}
+Approximate pattern matching is the pattern matching problem that allows errors. The error metrics or the distance between strings can affact the result of approximate matching a lot. The most common three of error metrics are Hamming distance, Longest common subsequence distance(LCS) and Levenshtein distance. The errors types are usually these three: replacement (or substitution), insertion and deletion.
 
+% TODO: consider some formal definition of approximate matching 
+
+\subsubsection{Aprroximate Kleenex}
 Peter Troelsen describes, in his master's
 thesis~\cite{troelsen2016approximate}, an approach to approximate transduction
 using Kleenex, by rewriting of core Kleenex programs. This is done by
