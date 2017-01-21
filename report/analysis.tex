@@ -4,31 +4,41 @@
 
 Visualization.
 
-\subsection{Improving kleenex}
-
+\subsection{Improving Kleenex}
 % TODO: write properly
 
 The result of the $k$-fold rewrite of a core Kleenex program, as described in
-Troelsen's thesis, is proved to be possible to execute in time $O(mnk)$ by
-determinization to an SST, where $n = |t|$ is the size of the input string and
-$m$ is the size of the transition relation of the corresponding NFST. This is
-proved by arguing that the growth of the number of transitions in the transucer
-is in the order $O(mk)$, since the transformation adds $k$ new transitions to
-the transducer for each existing transition and at most a constant number of
-additional transitions for each of these new transitions, depending on the
-error metric.  This utilizes the results of Theorem 1 and Corollary 1 in the
-POPL paper.
+Troelsen's thesis~\cite{troelsen2016approximate}, is proved to be possible to
+execute in time $\mathcal{O}(mnk)$ by determinization to an SST, where $n$ is
+the size of the input string and $m$ is the size of the transition relation of
+the corresponding NFST. This is proved by arguing that the growth of the number
+of transitions in the transducer is in the order $\mathcal{O}(mk)$ (for $k>0$),
+since the transformation adds $k$ new transitions to the transducer for each
+existing transition and at most a constant number of additional transitions for
+each of these new transitions, depending on the error metric. The
+aforementioned time bound then follows from the result
+in~\cite{grathwohl2016kleenex} that the SST can be implemented to execute in
+time $\mathcal{O}(mn)$.
 
-Theorem 2 from the POPL paper states that for an oracle machine of size $m$,
-i.e. the size of the transition relation, there is a (semantically equivalent)
-SST with $O(2^{m \log m})$ states.
+%This utilizes the results of Theorem 1 and Corollary 1 in the POPL paper.
 
-A corollary to this is that for a core Kleenex program with a corresponding
-transducer of size $m$, allowing approximate matches with up to $k$ errors,
-there is an SST with $O(2^{mk \log mk})$ states. Thus, the number of states in
-the SST resulting from the rewriting of core Kleenex and following
-determinization of the NFST, is exponential in $k$.
+Grathwohl et al.~\cite{grathwohl2016kleenex} also prove that for an oracle
+machine of size $m$, i.e. an NFST with $m$ transitions, there is a semantically
+equivalent SST with $\mathcal{O}(2^{m \log m})$ states. A corollary to this is
+that for a core Kleenex program with a corresponding transducer of size $m$,
+allowing approximate matches with up to $k$ errors, there is an SST with
+$\mathcal{O}(2^{mk \log mk})$ states. Thus, the number of states in the SST
+resulting from the rewriting of core Kleenex and following determinization of
+the NFST, is exponential in $k$.
 
+This seems to suggest a potential cause of the increased compilation times when
+using approximate matching in Kleenex and the very large output programs that
+it generates. Thus, one may be interested in exploring ways to avoid the
+increase in size of the NFST.
+
+% Theorem 2 from the POPL paper states that for an oracle machine of size $m$,
+% i.e. the size of the transition relation, there is a (semantically equivalent)
+% SST with $O(2^{m \log m})$ states.
 
 % Counters, implemented as optimization in the implementation vs. updating the
 % automata models.
@@ -65,7 +75,9 @@ substitutions. A formal definition follows:
 
 The transition relation can also be described in terms of functions on tag
 values, i.e. functions that take a tag value as argument and returns a possibly
-updated set of tags. Such a function may ignore the tag, i.e. just return a
+updated set of tags. For the purpose of approximate matching and as in
+Enevoldsen's thesis, this function will always return just a singleton set or
+the empty set. Such a tag function may ignore the tag, i.e. just return a
 singleton set of the given unchanged tag, it may set a new a new tag
 independent of the current tag value, or it may set a tag value depending on
 the current value.

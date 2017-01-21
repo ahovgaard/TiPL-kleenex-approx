@@ -84,15 +84,15 @@ with respect to $k$. For the rest of the tools they are fairly close in
 performance with SFM being the worst in low $k$ but having a seemingly near
 constant complexity with respect to $k$ and performing better for larger $k$.
 NR-grep while having the advantage of not having a single line file, gives the
-best results here for smaller $k$, but does have some wiered behaviour with it
-being better for $k=5$ and for $k=4$. Finally Kleenex performes quite well
+best results here for smaller $k$, but does have some weird behavior with it
+being better for $k=5$ and for $k=4$. Finally Kleenex performs quite well
 beating out SFM but not NR-grep, to begin with, but does really bad once we hit
 $k=3$, the reason for this sudden performance hit is likely due to caching
 issues, that are grounded in the executable size being 11MB.
 
-Figures \ref{fig:long} and \ref{fig:alternation} show fairly similar results to
+Figures \ref{fig:long} and \ref{fig:alternation} show fairly similar results
 to that of Figure \ref{fig:short}, which suggest that none of the tools do
-anything special that would change their relative performace.
+anything special that would change their relative performance.
 
 Finally Figure \ref{fig:ranges} show Kleenex performing quite bad when having a
 range to match, especially when the large executable size for $k=1$ kicks in.
