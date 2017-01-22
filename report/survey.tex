@@ -1,5 +1,5 @@
 \section{Survey of approximate matching techniques}
-As far as we can see, approximate matching is in general more complicated than exact matching. We can consider exact matching problems as a subset of approximate matching problems with an error of 0. The time complexity of many effcient exact matching algorithms that work as simulating a DFA, such as Knuth–Morris–Pratt, will become exponential as the number of errors grows if we just convert the NFA of the pattern into a DFA to be adapted in these algorithms. 
+Approximate matching is in general more complicated than exact matching. We can consider exact matching problems as a subset of approximate matching problems with an error of 0. The problem set will also change a lot if we use a different definition of the error metric or the type of errors. The time complexity of many efficient exact matching algorithms that work as simulating a DFA, such as the Knuth–Morris–Pratt algorithm, will become exponential as the number of errors grows if we just convert the NFA of the pattern into a DFA to be adapted in these algorithms. 
 
 \begin{comment}
 
@@ -41,29 +41,31 @@ Given a pattern $pat$ of length $m$,  and a text $txt$ of length $n$ and the alp
 \end{example}
 
 We use a computer word $D = d_m...d_1$ to store the current active state with an initial value of all bits 0. During the searching process, $D$ is updated with the following formula: 
-$$D \leftarrow ((D << 1) \ | \ 0^{m-1}1) \ \& \ B[t_j]$$
+$$D' \leftarrow ((D << 1) \ | \ 0^{m-1}1) \ \& \ B[t_j]$$
 where $t_j$ is the next text character.  When the $d_m$ bit in $D$ is set, we report the match. 
 
 One of the advantages of the $Shift-Or$ algorithm is that it is easy to be extended to handle classes of characters, which is helpful for approximate matching. 
+For example, we can now search for the pattern "ab."\footnote{ We use symbol '.' in this report to stand for a wildcard.}, which can be considered as the pattern "abc" allows a replacement error at the third character by just setting the $m-3+1$ bit of all the characters in the bit mask table as the following example shows. With this new bit mask table, searching for this pattern will be the same time complexity as search for "abc".
 
-For example, we can now search the pattern "ab\{c|d\}" with almost the same time complexity as search "abc". The new bit mask table as Example \ref{table-bitmask2} shows just needs to set the first bit of the character $b$ from the old one. 
-
-\begin{example}\emph{The bit mask table for pattern "ab\{c|d\}"}.
+\begin{example}\emph{The bit mask table for pattern "ab."}.
 	\begin{table}[H]
 		\centering
 		\begin{tabular}{|c|c|c|c|}
 			\hline
 			index      & 1                        & 2                        & 3                        \\ \hline
-			\textbf{a} & 0                        & 0                        & {\color[HTML]{3531FF} 1} \\ \hline
+			\textbf{a} & {\color{red} 1}                   & 0                        & {\color[HTML]{3531FF} 1} \\ \hline
 			\textbf{b} &  {\color{red} 1}                    & {\color[HTML]{3531FF} 1} & 0                        \\ \hline
 			\textbf{c} & {\color[HTML]{3531FF} 1} & 0                        & 0                        \\ \hline
-			\textbf{d} & 0                        & 0                        & 0                        \\ \hline
+			\textbf{d} &{\color{red} 1}                    & 0                        & 0                        \\ \hline
 		\end{tabular}
 		\label{table-bitmask2}
 	\end{table}
 \end{example}
  
-% TODO an example of this formula 
+ 
+As we know, many efficient pattern matching algorithms, such as the Knuth–Morris–Pratt and the Boyer-Moore algorithm, employ a trick of skipping characters. It is possible to combine the $bit-parallelism$ approach with the ability of skipping characters to achieve a even more efficient algorithm. This idea is implemented by the $BNDM$ algorithm, which is used in NR-grep. BNDM uses $Shift-Or$ instead of $Shift-And$, a variant of $Shift-And$ that uses the following state updating formula:  
+$$ D' \leftarrow  (D \ \& \ B[t_j]) << 1 .$$ The algorithm that is adapted in BNDM for skipping charaters is from the Boyer-Moore or the BDM families\cite{crochemore94}.
+ 
 
 
 \subsection{Python (\texttt{regex})}
