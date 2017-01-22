@@ -36,6 +36,9 @@ using approximate matching in Kleenex and the very large output programs that
 it generates. Thus, one may be interested in exploring ways to avoid the
 increase in size of the NFST.
 
+% TODO: Talk about the inconvenient way that counting errors is represented by
+% directly encoding it in the grammar rather than simply counting the errors.
+
 % Theorem 2 from the POPL paper states that for an oracle machine of size $m$,
 % i.e. the size of the transition relation, there is a (semantically equivalent)
 % SST with $O(2^{m \log m})$ states.
@@ -49,13 +52,15 @@ In his bachelor's thesis~\cite{enevoldsen2015pattern}, Sune Enevoldsen uses the
 concept of a tagged automaton, based on work by Ville
 Laurikari~\cite{laurikari2000nfas, laurikari2001efficient} and inspired by
 Levenshtein automata~\cite{schulz2002fast}, to do approximate regular string
-matching.
+matching. This model was originally introduced to solve the problem of
+extracting the position of matches for subexpressions of a regular expression,
+however Laurikari also suggests its application to approximate matching.
 
-A nondeterministic automaton with tagged transitions, or a tagged NFA, is an
-NFA extended with a set of tags which may be set or modified on each transition
-in the transition relation. The idea is to use these tags as counters which
-keep track of the allowed number of errors, e.g.  insertions, deletion, and
-substitutions. A formal definition follows:
+A nondeterministic automaton with tagged transitions, or a tagged NFA, is a
+finite automaton extended with a set of tags which may be set or modified on
+each transition in the transition relation. The idea is to use these tags as
+counters which keep track of the allowed number of errors, e.g. insertions,
+deletion, and substitutions. A formal definition follows:
 
 % Thus, the tagged automata for a given regular expression $RE$ will accept the
 % strings in $\mathcal{L}(RE)$ as well as any string that is within a certain
@@ -74,19 +79,81 @@ substitutions. A formal definition follows:
 \end{definition}
 
 The transition relation can also be described in terms of functions on tag
-values, i.e. functions that take a tag value as argument and returns a possibly
-updated set of tags. For the purpose of approximate matching and as in
-Enevoldsen's thesis, this function will always return just a singleton set or
-the empty set. Such a tag function may ignore the tag, i.e. just return a
-singleton set of the given unchanged tag, it may set a new a new tag
-independent of the current tag value, or it may set a tag value depending on
-the current value.
+values. For each transition from state $p$ to state $q$ on input symbol $a$,
+define a function $T_{p,a,q}$ from the set of tags $T$ to sets of tags. For the
+purpose of approximate matching, and as in Enevoldsen's thesis, these functions
+will always return just a singleton set or the empty set. Such a tag function
+may ignore the tag, i.e. just return a singleton set of the given unchanged
+tag, it may set a new a new tag independent of the current tag value, or it may
+set a tag value depending on the current value. In particular, if
+$T_{p,a,q}(t) = \emptyset$, then the automaton cannot transition from state $p$
+to state $q$ on symbol $a$ when the tag $t$ is set.
 
 To use this automaton for approximate regular string matching using the
-Levenshtein distance metric, we can set $T = \mathbb{N}^3$ (including zero) and
-$t_0 = (0,0,0)$. Thus, when entering a subexpression which allows a specified
-number of substitutions, insertions, and deletions, the ingoing transition can
-set the tag to the allowed errors.
+Levenshtein distance metric, we can set $T = \mathbb{N}^3$ and $t_0 =
+[0,0,0]$. Thus, when entering a subexpression which allows a specified number
+of substitutions, insertions, and deletions, the ingoing transition can set the
+tag to the allowed errors. Similarly when leaving the subexpression, the tag
+can be reset to $[0,0,0]$. For a mismatch, the tag function will be
+\[
+  M([m,i,d]) =
+  \begin{cases}
+    \emptyset     & \text{if } m = 0 \\
+    \{[m-1,i,d]\} & \text{otherwise}
+  \end{cases}
+\]
+and analogously for insertions, denoted $I$, and deletions, denoted $D$.
+
+Thus, for Thompson's construction, the case for a literal character regular
+expression $a \in \Sigma$ is changed to the following:
+
+\begin{center}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.0cm,
+  semithick, main/.style={circle,draw,minimum width=10pt}]
+    \node (q0) {};
+    \node[main] (q1) [right = 5mm of q0] {};
+    \node[main] (q2) [right = of q1] {};
+    \path (q0) edge (q1)
+    (q1) edge [loop above] node {$./I$}
+    (q1) edge node {$a$} (q2)
+    (q1) edge[bend left] node {$\epsilon/D$} (q2)
+    (q1) edge[bend right] node[below] {$\bar{a}/M$} (q2);
+\end{tikzpicture}
+\end{center}
+
+
+For the sake of simplicity, consider now just the mismatch error type. Extend
+the notion of tagged automata to transducers in the straightforward way. One
+could transform an NFST for exact matching to a tagged NFST by translating the
+core Kleenex term $N ::= \mathtt{a}N'$ to the following transitions in the
+NFST:
+
+\begin{center}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=0.5cm,
+  semithick, main/.style={minimum width=10pt}]
+    \node (q0) {$N$};
+    \node (q0a) [above right = 5mm of q0] {$N_0$};
+    \node (q0b) [below right = 5mm of q0] {$N_1$};
+    \node (q1) [below right = of q0a] {$N'$};
+    \path (q0) edge node {$\epsilon_0/\epsilon$} (q0a)
+    (q0) edge node [below left] {$\epsilon_1/\epsilon$} (q0b)
+    (q0a) edge node {$\mathtt{a} / \epsilon$} (q1)
+    (q0b) edge node [below right] {$\bar{\mathtt{a}}/\epsilon, M$} (q1);
+\end{tikzpicture}
+\end{center}
+
+Here the $M$ in $\bar{\mathtt{a}}/\epsilon, M$ denotes the tag function on the
+transition, which decrements the number of allowed mismatches by one.
+
+When performing path tree simulation, one could extend the state of each leaf
+to include the number of allowed mismatches in that state. A leaf in the path
+tree will then be able to step if the tag function maps the current tag to a
+nonempty set, the singleton value of which will then be the new tag.
+
+
+% TODO: Talk about sub-pattern matching to speed up search, e.g. searching for
+% long literal part of pattern first before considering the whole pattern.
+
 
 
 %%% Local Variables:
