@@ -40,48 +40,13 @@ Given a pattern $pat$ of length $m$,  and a text $txt$ of length $n$ and the alp
 \end{table}
 \end{example}
 
-An NFA that can be used to search for this pattern in a text is as follows.
-
-\begin{figure}[H]
-\centering
-	\begin{tikzpicture}[scale=0.15]
-	\tikzstyle{every node}+=[inner sep=0pt]
-	\draw [black] (18.3,-25.8) circle (3);
-	\draw (18.3,-25.8) node {$q_0$};
-	\draw [black] (49.5,-25.8) circle (3);
-	\draw (49.5,-25.8) node {$q_2$};
-	\draw [black] (33,-25.8) circle (3);
-	\draw (33,-25.8) node {$q_1$};
-	\draw [black] (63.2,-25.8) circle (3);
-	\draw (63.2,-25.8) node {$q_3$};
-	\draw [black] (63.2,-25.8) circle (2.4);
-	\draw [black] (11.2,-25.8) -- (15.3,-25.8);
-	\fill [black] (15.3,-25.8) -- (14.5,-25.3) -- (14.5,-26.3);
-	\draw [black] (21.3,-25.8) -- (30,-25.8);
-	\fill [black] (30,-25.8) -- (29.2,-25.3) -- (29.2,-26.3);
-	\draw (25.65,-26.3) node [below] {$a$};
-	\draw [black] (36,-25.8) -- (46.5,-25.8);
-	\fill [black] (46.5,-25.8) -- (45.7,-25.3) -- (45.7,-26.3);
-	\draw (41.25,-26.3) node [below] {$b$};
-	\draw [black] (16.977,-23.12) arc (234:-54:2.25);
-	\draw (18.3,-18.55) node [above] {$\Sigma$};
-	\fill [black] (19.62,-23.12) -- (20.5,-22.77) -- (19.69,-22.18);
-	\draw [black] (52.5,-25.8) -- (60.2,-25.8);
-	\fill [black] (60.2,-25.8) -- (59.4,-25.3) -- (59.4,-26.3);
-	\draw [black] (52.5,-25.8) -- (60.2,-25.8);
-	\fill [black] (60.2,-25.8) -- (59.4,-25.3) -- (59.4,-26.3);
-	\draw (56.35,-26.3) node [below] {$c$};
-	\end{tikzpicture}
-\caption{A NFA to search for the pattern "abc".}
-\end{figure}
-
-We use a computer word $D = d_m...d_1$ to store the current active state in this NFA with an initial value of all bits 0. During the simulation, $D$ is updated with the following formula: 
+We use a computer word $D = d_m...d_1$ to store the current active state with an initial value of all bits 0. During the searching process, $D$ is updated with the following formula: 
 $$D \leftarrow ((D << 1) \ | \ 0^{m-1}1) \ \& \ B[t_j]$$
 where $t_j$ is the next text character.  When the $d_m$ bit in $D$ is set, we report the match. 
 
 One of the advantages of the $Shift-Or$ algorithm is that it is easy to be extended to handle classes of characters, which is helpful for approximate matching. 
 
-For example, we can now search the pattern "ab\{c|d\}" with almost the same time complexity as search "abc". The new bit mask table as Example \ref{table-bitmask2} shows just needs to set the first bit of the character $b$. 
+For example, we can now search the pattern "ab\{c|d\}" with almost the same time complexity as search "abc". The new bit mask table as Example \ref{table-bitmask2} shows just needs to set the first bit of the character $b$ from the old one. 
 
 \begin{example}\emph{The bit mask table for pattern "ab\{c|d\}"}.
 	\begin{table}[H]
@@ -98,39 +63,7 @@ For example, we can now search the pattern "ab\{c|d\}" with almost the same time
 	\end{table}
 \end{example}
  
-
-
-\begin{center}
-	\begin{tikzpicture}[scale=0.15]
-	\tikzstyle{every node}+=[inner sep=0pt]
-	\draw [black] (18.3,-25.8) circle (3);
-	\draw (18.3,-25.8) node {$q_0$};
-	\draw [black] (33,-25.8) circle (3);
-	\draw (33,-25.8) node {$q_1$};
-	\draw [black] (63.2,-25.8) circle (3);
-	\draw (63.2,-25.8) node {$q_3$};
-	\draw [black] (63.2,-25.8) circle (2.4);
-	\draw [black] (48.1,-25.8) circle (3);
-	\draw (48.1,-25.8) node {$q_2$};
-	\draw [black] (11.2,-25.8) -- (15.3,-25.8);
-	\fill [black] (15.3,-25.8) -- (14.5,-25.3) -- (14.5,-26.3);
-	\draw [black] (21.3,-25.8) -- (30,-25.8);
-	\fill [black] (30,-25.8) -- (29.2,-25.3) -- (29.2,-26.3);
-	\draw (25.65,-26.3) node [below] {$a$};
-	\draw [black] (16.977,-23.12) arc (234:-54:2.25);
-	\draw (18.3,-18.55) node [above] {$\Sigma$};
-	\fill [black] (19.62,-23.12) -- (20.5,-22.77) -- (19.69,-22.18);
-	\draw [black] (36,-25.8) -- (45.1,-25.8);
-	\fill [black] (45.1,-25.8) -- (44.3,-25.3) -- (44.3,-26.3);
-	\draw (40.55,-26.3) node [below] {$b$};
-	\draw [black] (49.489,-23.161) arc (141.34482:38.65518:7.889);
-	\fill [black] (61.81,-23.16) -- (61.7,-22.22) -- (60.92,-22.85);
-	\draw (55.65,-19.7) node [above] {$b$};
-	\draw [black] (51.1,-25.8) -- (60.2,-25.8);
-	\fill [black] (60.2,-25.8) -- (59.4,-25.3) -- (59.4,-26.3);
-	\draw (55.65,-26.3) node [below] {$c$};
-	\end{tikzpicture}
-\end{center}
+% TODO an example of this formula 
 
 
 \subsection{Python (\texttt{regex})}
