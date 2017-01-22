@@ -245,6 +245,10 @@ only adds a constant number of new definitions. There also needs to be added a
 new start symbol with nested alternations indicating a preference for which
 $N_i$ to start with.
 
+The transducers for the original program and the rewritten approximate program
+have been visualized using the built-in functionality of the Kleenex compiler
+and are attached in Appendix~\ref{app:approx-kleenex-example}.
+
 This rewritten program only allows up to $k$ mismatches. The program would be
 larger if it also needed to support insertions and deletions, albeit only by a
 constant factor~\cite{troelsen2016approximate}. The program grows rather large
