@@ -180,6 +180,31 @@ follows:
   \end{tabular}
 \end{center}
 
+\subsubsection{Streaming simulation and determinization}
+
+Grathwohl et al.~\cite{grathwohl2016kleenex}, as well as Søholm and
+Tørholm~\cite{soholm2015ordered}, describe how a normalized FST, respectively
+an ordered finite transducer (an alternative model), can be simulated in a
+streaming fashion using \emph{path-tree simulation}. This algorithm maintains a
+structure called a \emph{path tree}, a binary tree which plays a similar role
+to the set of active states in NFA simulation, but it also maintains the paths
+from the initial state to all the states reachable on the current prefix of the
+input. The output produced in the stem of the path tree, that is, the path from
+the root to the first branching node, may be output immediately, thus enabling
+streaming transduction.
+
+A path tree may be \emph{reduced} by pruning duplicate leafs with
+lexicographically larger bit strings, since they will not be preferred by the
+greedy disambiguation strategy, and by merging non-branching nodes and
+concatenating their outputs.
+
+Since the number of reduced path trees is finite~\cite{soholm2015ordered}
+(ignoring output), these may be precomputed to determinize the NFST. A
+\emph{streaming string transducer} (SST) is a deterministic automaton with
+abstract states corresponding to the reduced path trees, transitions
+representing how the reduced path trees transform on given input, and registers
+which store the outputs associated with each node in the path tree.
+
 
 \subsection{Approximate matching and transduction in Kleenex}
 \subsubsection{Approximate pattern matching}
