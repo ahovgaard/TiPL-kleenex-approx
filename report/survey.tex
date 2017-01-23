@@ -133,20 +133,20 @@ Consider the pattern "ab" allowing one error; we can build an NFA to simulate it
 	\draw (40.8,-38.4) node [below] {$b$};
 	\draw [black] (20.62,-27.71) -- (30.68,-35.99);
 	\fill [black] (30.68,-35.99) -- (30.38,-35.1) -- (29.75,-35.87);
-	\draw (23.49,-32.34) node [below] {$\epsilon, \Sigma$};
+	\draw (23.49,-32.34) node [below] {$\epsilon, \bar{a}$};
 	\draw [black] (48.6,-28.7) -- (48.6,-34.9);
 	\fill [black] (48.6,-34.9) -- (49.1,-34.1) -- (48.1,-34.1);
 	\draw (48.1,-31.8) node [left] {$\Sigma$};
 	\draw [black] (35.37,-27.64) -- (46.23,-36.06);
 	\fill [black] (46.23,-36.06) -- (45.9,-35.18) -- (45.29,-35.97);
-	\draw (39.96,-32.35) node [below] {$ \epsilon,\Sigma$};
+	\draw (39.96,-32.35) node [below] {$ \epsilon,\bar{b}$};
 	\end{tikzpicture}
 \end{center}
-\caption{An NFA accepting the pattern "ab" with at most one error. The label $\epsilon,\Sigma$ on the diagonal arrows means both $\epsilon$ and $\Sigma$ can be accepted.}
+\caption{An NFA accepting the pattern "ab" with at most one error. $\bar{a}$ means any character in $\Sigma$ except $a$.}
 \label{fig:nfa"ab"}
 \end{figure}
  
-In Figure \ref{fig:nfa"ab"}, the last state of each row stands for a state that accepts $r$ errors where $r$ is the index of the row (0-indexed). That is, in our example, the state $q_2$ accepts "ab" with no errors and $q_2'$  with exact one error. The vertical arrows represent insertion, and the diagonal arrows with the label $\epsilon$ and $\Sigma$ stand for deletion and replacement respectively. For any other pattern with $k$ errors, we could also build an NFA to accept it in such a way by iteration. It is worth noting that the number of states in the NAF built in this way increases linearly with the number of errors.
+In Figure \ref{fig:nfa"ab"}, the last state of each row stands for a state that accepts $r$ errors where $r$ is the index of the row (0-indexed). That is, in our example, the state $q_2$ accepts "ab" with no errors and $q_2'$  with exact one error: the vertical arrows represent insertions; the diagonal arrows with label $\epsilon$ stand for deletion; the diagonal arrows with $\bar{a}$ stand for replacement for the character $a$. For any other pattern with $k$ errors, we could also build an NFA to accept it in such a way by iteration. It is worth noting that the number of states in the NAF built in this way increases linearly with the number of errors.
 
 The technique stores each row in a machine word, say $R_i$ for row $i$, just as the $D$ we have seen in $\operatorname{Shift-And}$.
 The formulas for updating these words are listed below:
