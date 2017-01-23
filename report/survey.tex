@@ -1,46 +1,47 @@
 \section{Survey of approximate matching techniques}
-The approximate matching problem is in general more complicated than the exact matching problem. We can consider exact matching problems as a subset of approximate matching problems with an error of 0. We should note that the problem set will also change a lot if we use a different definition of error metric(such as Levenshtein distance or Hamming distance) or different models of errors (such as insertation, deletion or transition). The time complexity of many efficient exact matching algorithms that work as simulating a DFA, such as the Knuth–Morris–Pratt algorithm, will become exponential as the number of errors grows if we just convert the NFA that accepts the pattern with errors into a DFA to be applied in these algorithms. 
+The approximate matching problem is in general more complicated than the exact matching problem. We can consider exact matching problems as a subset of approximate matching problems with an error of 0. We should note that the problem set will also change a lot if we use a different error metric(such as Levenshtein distance or Hamming distance) or a different model of errors (such as insertation, deletion or transition). The time complexity of many efficient exact matching algorithms that work as simulating DFAs, such as the Knuth--–Morris--–Pratt algorithm, will become exponential as the number of errors grows if we just convert the NFAs that accepts the pattern with errors into DFAs to be applied in these algorithms. 
 
+From now on we denote the pattern string with $pat$ and the text string with $txt$ and  the lengths of them are $m$ and $n$ respectively.
 
 \subsection{Dynamic programming}
 
-One of the classical solutions to approximate matching is to use dynamic programming. This method is simple and easy to be implemented by programming. It has been proved that if the alphabet is of a constant size, approximate string matching with $k$ errors can be solved in $O(kn)$ time where $n$ is the length of the text\cite{crochemore-jewels}. The investigation of the related theory background is heavy and can be left as future work, but we can still have a look at the basic idea.
+One of the classical solutions to approximate matching is to use dynamic programming. This method is simple and easy to be implemented by programming. It has been proved that if the alphabet is of a constant size, approximate string matching with $k$ errors can be solved in $O(kn)$ time\cite{crochemore-jewels}. The investigation of the theory background is heavy and can be left as future work.
 
-The idea of solving string matching with errors using dynamic programming can be considered as filling in a matrix of size $m\times n$ where $m$ is the length of the pattern. We show an example of such a problem.
+Here we present an idea of how to match a pattern with the Levenshtein distance by dynamic programming. Informally, the Levenshtein distance between two strings is the minimum number of edits(including replacement, insertion and deletion) that requires to change one string into the other. The problem above can be considered as filling in a matrix of size $m\times n$. In such a matrix, an element [$i$+1,$j$+1] ($i$ and $j$ denote the number of row and column respectively in the matrix) is filled with the value [$i$,$j$] if $pat$[$i$+1] is the same with $txt$[$j$+1]; otherwise the sum of 1 and the minimum of [$i$,$j$],[$i$,$j$+1] and [$i$+1,$j$], which indicates a replacement, a deletion and an inseration respectively. We show an example of such a problem.
 
-\begin{example} \emph{Dynamic programming solving approximate matching with Levishtein distance of 1 for pattern "abc" and text "abaabcb".}
+\begin{example} \emph{Dynamic programming solving approximate matching with the Levishtein distance of 1 for pattern "abc" and text "abaab".}
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-\hline
-\textbf{}                         & \textbf{}                & \textbf{a}               & \textbf{b}               & \textbf{a}               & \textbf{a}               & \textbf{b}               & \textbf{c}               & \textbf{b}               \\ \hline
-& 0                        & 1                        & 2                        & 3                        & 4                        & 5                        & 6                        & 7                        \\ \hline
-\textbf{a}                        & 1                        & \textbf{0} & 1                        & {\color[HTML]{333333} 2} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 4} & {\color[HTML]{333333} 5} & {\color[HTML]{333333} 6} \\ \hline
-\textbf{b}                        & 2                        & 1                        &\textbf{0}                       & {\color[HTML]{333333} 1} & {\color[HTML]{333333} 2} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 4} & {\color[HTML]{333333} 5} \\ \hline
-{\color[HTML]{333333} \textbf{c}} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 2} & \textbf{\color[HTML]{32CB00} 1} & {\color[HTML]{32CB00} 1} & {\color[HTML]{333333} 2} & {\color[HTML]{000000} 3} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 4} \\ \hline
+\begin{tabular}{|c|c|c|c|c|c|}
+	\hline
+	\multicolumn{1}{|l|}{}            & \multicolumn{1}{l|}{}    & \multicolumn{1}{l|}{\textbf{a}}   & \multicolumn{1}{l|}{\textbf{b}}   & \multicolumn{1}{l|}{\textbf{a}} & \multicolumn{1}{l|}{\textbf{a}} \\ \hline
+	& \textbf{0}               & 1                                 & 2                                 & 3                               & 4                               \\ \hline
+	\textbf{a}                        & 1                        & {\color[HTML]{000000} \textbf{0}} & 1                                 & {\color[HTML]{333333} 2}        & {\color[HTML]{333333} 3}        \\ \hline
+	\textbf{b}                        & 2                        & 1                                 & \textbf{0}                        & {\color[HTML]{333333} 1}        & {\color[HTML]{333333} 2}        \\ \hline
+	{\color[HTML]{333333} \textbf{c}} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 2}          & {\color[HTML]{32CB00} \textbf{1}} & {\color[HTML]{000000} 1}        & {\color[HTML]{333333} 2}        \\ \hline
 \end{tabular}
 \end{table}
 	\label{fig:dynap}
  \end{example}
  
-If we look at the last row of this matrix, the values from left to right show us how the Levinshtein distance changes when we read into each character of the text. Note that the path downward between two elements can be considered as an insertion, and moving right like a deletion and a diganol increase is a repleacement and no increase means a match. If we search for a matching of Levishtein distance of 1, the program reports a match when we read the second or the third charachter of the text.
+If we look at the last row of this matrix, the filled values from left to right show us how the Levinshtein distance changes between the pattern and the text we have read. When we read in the second character of the text, i.e. $b$, a match is found, that is $ab$ matches $abc$ with one error. The numbers in bold show us the path of this match: two diagnoal steps with no increase on the value mean two exact matchs of single character (i.e., matches of $a$ and $b$) and one vertical step means an insertation (i.e., insertion of $c$). 
 
-Dynamic programming is simple, practical and easy to be extended to support more abilities such as specifying the number of each type of errors, which may be implemented by finding a particular path in the matrix. For instance, in Example \ref{fig:dynap},  the numbers in bold show a path of one insertion, that is, two 0s in diagnol stands for two matches and one downwards mean an insertion. So with some backtracking techniques, it is possible to be implemented. Our experiment tools such as Python and Scan\_for\_matches are probably based on this method. As there is no documentation or describution of what the approximate matching algorithms are implemented in these tools, this could be future work for investegation.
+Dynamic programming is simple, practical and easy to be extended to support more functionalities such as specifying the number of each type of errors, which can be implemented by finding a particular path in the matrix as we have shown above. It is likely that our experiment tools such as Python {\tt regex} and Scan\_for\_matches are based on this method as the time complexity appears close to linear. As there is no documentation or describution of what the approximate matching algorithms are used in these tools, this can be left as future work for further investegation.
 
 \subsection{Automaton simulation}
-Another classical one is to use automaton simulation. The algortihm BNDM  (we will explain later) over which NR-grep is built is basically a simulation of an NFA. 
+Another classical approach is to use automaton simulation. The algortihm BNDM  (we will explain later) over which NR-grep is built is basically a simulation of an NFA. 
 
 From the experiment results shown in the previous section, we find NR-grep has the best performance in average in our various test cases. This is not surprising because NR-grep implemented different efficient algorithms for various pattern matching problems as well as a good software design. We present some important techniques of approximate matching as well as efficient matching algorithms that used in NR-grep.
 
 \subsubsection{Bit-parallelism}
 
-From NR-grep's perspective, the patterns are classified into three levels: simple patterns, extended patterns and regular experssions. Different patterns are applied  different algorithms to make sure that the problem can be solved in the most efficient way. The name of this tool comes from "nondeterministic reverse $grep$", which indicates this tool can simulate NFAs instead of converting them to DFAs. The algorithm of  simulating NFAs used in NR-grep is called $Shift-Or$. This algorithm is based on an approach called $bit-parallelism$, which takes advantage of the parallelism of the bit operations inside a computer word. A variant of Shift-Or that is easier to explain is $Shift-And$ algorithm, which also based on $bit-parallelism$. We first show how this algorithm works. 
+From NR-grep's perspective, the patterns are classified into three levels: simple patterns, extended patterns and regular experssions. Different patterns are applied  different algorithms to make sure that the problem can be solved in the most efficient way. The name of this tool comes from "nondeterministic reverse $grep$", which indicates this tool can simulate NFAs instead of converting them to DFAs. The algorithm of  simulating NFAs used in NR-grep is called $\operatorname{Shift-Or}$. This algorithm is based on an approach called $\operatorname{bit-parallelism}$, which takes advantage of the parallelism of bit operations inside a computer word. A variant of Shift-Or that is easier to explain is $\operatorname{Shift-And}$ algorithm. We first show how this algorithm works. 
 
-Given a pattern $pat$ of length $m$,  and a text $txt$ of length $n$ and the alphabet set is $\Sigma$ with a size $|\Sigma|$. First we build a table $B$ in which for each character in $\Sigma$ stores a bit mask $b_m...b_1$. Each bit mask in the table has a length of $m$. For a character $char$ in $pat$ with an index $i$ (1-indexed), set the $m-i-1$ bit of the mask in B[$char$]. The following example shows a bit mask table for the pattern "abc" assuming $\Sigma$ = {a,b,c,d}.
+Given both the pattern and the text in the alphabet $\Sigma$ with a size $|\Sigma|$, first we build a table $B$ in which for each character in $\Sigma$ stores a bit mask $b_m...b_1$. For a character $char$ in $pat$ with an index $i$ (1-indexed), set the $\operatorname{(m-i-1)}$ bit of the mask in B[$char$]. The following example shows a bit mask table for the pattern "abc".
 
 
-\begin{example}\emph{The bit mask table for pattern "abc".}
+\begin{example}\emph{The bit mask table for pattern "abc", assuming $\Sigma$ = \{a,b,c,d\}.}
 
 \begin{table}[H]
 	\centering
@@ -56,12 +57,12 @@ Given a pattern $pat$ of length $m$,  and a text $txt$ of length $n$ and the alp
 \end{table}
 \end{example}
 
-We use a computer word $D = d_m...d_1$ to store the current active state with an initial value of all bits 0. During the searching process, $D$ is updated with the following formula: 
+We use a computer word $D = d_m...d_1$ to store the current active state (or the current matching position in the pattern) with an initial value of all bits 0. During the searching process, $D$ is updated with the following formula: 
 $$D' \leftarrow ((D << 1) \ | \ 0^{m-1}1) \ \& \ B[t_j]$$
-where $t_j$ is the next text character.  When the $d_m$ bit in $D$ is set, we report the match. 
+where $t_j$ is the next text character.  When the $d_m$ bit in $D$ is set, we report a match. 
 
-One of the advantages of the $Shift-Or$ algorithm is that it is easy to be extended to handle classes of characters, which is helpful for approximate matching. 
-For example, we can now search for the pattern "ab."\footnote{ We use symbol '.' in this report to stand for a wildcard.}, which can be considered as the pattern "abc" allows a replacement error at the third character by just setting the $m-3+1$ bit of all the characters in the bit mask table as the following example shows. 
+One of the advantages of the $\operatorname{Shift-And}$ algorithm is that it is easy to be extended to handle classes of characters, which is helpful for approximate matching. 
+For example, we can now search for the pattern "ab."\footnote{ We use symbol '.' in this report to stand for a wildcard.}, which can be considered as the pattern "abc" allowing at most one replacement error at the third character by just setting the $\operatorname{(m-3+1)}$ bit of all the characters in the bit mask table, as the following example shows. 
 
 \begin{example}\emph{The bit mask table for pattern "ab."}.
 	\begin{table}[H]
@@ -82,13 +83,13 @@ With this new bit mask table, searching for the pattern "ab.", or more generally
 %We can also find that an error of insertion can be dealt with by adding a new row of all 1s in the bit mask table and a deletion is just removing one row. 
  
 \subsubsection{BNDM algorithm}
-As we know, many efficient pattern matching algorithms, such as the Knuth–Morris–Pratt and the Boyer-Moore algorithm, employ a trick of skipping characters. It is possible to combine the $bit-parallelism$ approach with the ability of skipping characters to achieve an even more efficient algorithm. This idea is implemented by the $BNDM$ algorithm, which is used in NR-grep. BNDM uses $Shift-Or$ instead of $Shift-And$, a variant of $Shift-And$ that uses the following state updating formula:  
+As we know, many efficient exact pattern matching algorithms, such as the Knuth--–Morris--–Pratt and the Boyer-Moore algorithm, utilize a trick of skipping characters. It is aslo possible to combine the $\operatorname{bit-parallelism}$ approach with the ability of skipping characters to achieve an even more efficient algorithm. This idea is implemented in the $BNDM$ algorithm as we have introduced before. BNDM uses $\operatorname{Shift-Or}$ instead of $\operatorname{Shift-And}$, a variant of $\operatorname{Shift-And}$ that uses the following state updating formula:  
 $$ D' \leftarrow  (D \ \& \ B[t_j]) << 1 .$$ The algorithm that is adapted in BNDM for skipping charaters is from the Boyer-Moore or the BDM families\cite{crochemore1994text}.
 
 
 \subsubsection{NFA simulation}
-As we have shown above, bit-parallelism deals with single error efficiently.
-Now we present how bit-parallelism can be used to simulate an NFA for approximate matching. 
+As we have shown above, bit-parallelism can deal with single error efficiently.
+Now we present how bit-parallelism can be used to simulate NFAs for approximate matching. 
 
 Consider the pattern "ab" allowing one error, we can build an NFA to simulate it as the follow figure shows.
 
@@ -145,21 +146,21 @@ Consider the pattern "ab" allowing one error, we can build an NFA to simulate it
 \label{fig:nfa"ab"}
 \end{figure}
  
-In Figure \ref{fig:nfa"ab"}, the last state of each row stands for a state that accepts $r$ errors where $r$ is the index of the row (0-indexed). That is, in our example, the state $q_2$ accepts "ab" with no error and $q_2'$  with exact one error. The vertical arrows represent an insertion, and the $\epsilon$ and $\Sigma$ on the diagonal arrows stand for a deletion and a replacement respectively. We can image that we could build an NFA for any other patterns with $k$ errors in such manner iteratively. It is worth noting that the number of states in the NAF built in such a way increases linearly with the number of errors.
+In Figure \ref{fig:nfa"ab"}, the last state of each row stands for a state that accepts $r$ errors where $r$ is the index of the row (0-indexed). That is, in our example, the state $q_2$ accepts "ab" with no errors and $q_2'$  with exact one error. The vertical arrows represent insertion, and the diagonal arrows with the label $\epsilon$ and $\Sigma$ stand for deletion and replacement respectively. For any other pattern with $k$ errors, we could also build an NFA to accept it in such a way by iteration. It is worth noting that the number of states in the NAF built in this way increases linearly with the number of errors.
 
-The technique stores each row in a machine word, say $R_i$ for row $i$ %just as we have shown in $Shift-And$.???
-The updating of these words are performed with the following formulars: 
+The technique stores each row in a machine word, say $R_i$ for row $i$, just as the $D$ we have seen in $\operatorname{Shift-And}$.
+The formulars for updating these words are listed below:
 
 \begin{align*}
-R_0' \leftarrow & ((R_0 << 1) \ |\ 0^{m-1}) \ \& \ B[t_j] \\
-for \ &i \in 1...k \ do:  \\
-	& R_i' \leftarrow ((R_i << 1) \ \& \ B[t_j] ) \ |\ R_{i-1} \ | \ (R_{i-1} << 1 ) \ |\ (R_{i-1}' << 1)
+&R_0' \leftarrow  ((R_0 << 1) \ |\ 0^{m-1}) \ \& \ B[t_j] \\
+&for \ i \in 1...k \ do:  \\
+&\ \ \ \ R_i' \leftarrow ((R_i << 1) \ \& \ B[t_j] ) \ |\ R_{i-1} \ | \ (R_{i-1} << 1 ) \ |\ (R_{i-1}' << 1)
 \end{align*}
 
-These formulars show us one case of how bit-parallelism simulate an NFA. $R_0'$ is updated just as we have shown in $Shift-And$. In the formular for updating $R_i'$, the first element (i.e., $((R_i << 1) \ \& \ B[t_j] ) $ ) is similar to $Shitf-And$ but removed the OR operation with $O^{m-1}$ because it can not be an initial state that has a self-loop. The second is the old value of its upper row, which corresponds to a vertial arrow. Similarly, the third stands for a replacement and the fourth a deletion. When we detect that $R_k \& 10^{m-1}$ is not zero, a match is reported.  
+These formulars show us one case of how bit-parallelism simulate an NFA. $R_0$ is updated just as we have done with $D$ in $\operatorname{Shift-And}$. In the formular for updating $R_i$, the first element (i.e., $((R_i << 1) \ \& \ B[t_j] ) $ ) is similar to the one for updating $R_0$  but without the $OR$ operation with $0^{m-1}$ because $R_i$ can not be an initial state that has a self-loop. The second is the old value of its upper row, which corresponds to a vertial arrow in the NFA. Similarly, the third stands for a replacement and the fourth a deletion. When we detect that $R_k \& 10^{m-1}$ is not zero, a match is reported.  
 
-As we can see from the above updating formulas, each updating is just bitwise operation hence constant time. So this simulation should be only linear time complexity with $k$.
+As we can see from the above updating formulas, each updating is just bitwise operation hence constant time. So this simulation should be only linear time complexity increased, i.e, $O(k)$, compared with the simulation of exact matching of the same pattern.
  
 
 \subsubsection{Splitting technique}
-An important property of $k$ errors approximate matching has been found that if we split the pattern into $k+1$ pieces then there must be at least one piece that has no error\cite{wu1992}. Note that this property only works for an error model of insertion, replacement and deletion. With this property, the approximate matching problem can be reduced to the multi-pattern matching problem with an extra verification, which is to check if the surrounding text of these pieces can be a match of the whole pattern that allows $k$ errors. This technique is also employed in NR-grep. 
+An important property of $k$ errors approximate matching has been found that if we split the pattern into $k+1$ pieces then there must be at least one piece that has no errors\cite{wu1992}. Note that this property only works for an error model of insertion, replacement and deletion. With this property, the approximate matching problem can be reduced to the multi-pattern matching problem with an extra verification, which is to check if the surrounding text of these pieces can be a match of the whole pattern that allows $k$ errors. This technique is also employed in NR-grep. 
