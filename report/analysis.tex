@@ -213,11 +213,25 @@ Appendix~\ref{app:approx-kleenex-example}. Furthermore, this tagged transducer
 is of a fixed size independent of $k$, compared to the linear growth of the
 rewritten program.
 
-When performing path tree simulation, one could extend the state of each leaf
-to include the number of allowed mismatches in that state. A leaf in the path
-tree will then be able to step if the tag function maps the current tag to a
-nonempty set, the single element of which will then be the new tag.
+It may be possible to simulate a tagged transducer like a regular transducer,
+using path-tree simulation, by extending the state of each leaf of the path
+tree to include the number of allowed mismatches in that state. A leaf in the
+path tree will then be able to step on a given input symbol according to the
+transition relation, if the tag function maps the current tag to a nonempty
+set, the single element of which will then be the new tag, otherwise the path
+will fail.
 
+The question still remains, whether it is possible to determinize such an
+automaton to an SST and how many states it would generate. Following the
+argument in \cite{soholm2015ordered}, there is a finite number of reduced path
+trees, ignoring outputs, and since the value of $k$ for any given leaf is also
+bounded, there is also a finite number of reduced path trees with associated
+error counts. Thus, it should be possible to determinize these into a streaming
+string transducer, that is, a deterministic automaton with abstract states
+corresponding to the reduced path trees as states, transitions representing the
+changes to the path tree during simulation, and registers storing the outputs
+associated with each node in the path tree. The size of such an SST will have
+to be investigated in future work.
 
 
 \subsubsection{Scanning for subpatterns}
@@ -234,10 +248,10 @@ potential match can then be verified, e.g. by simulating the transducer using
 path-tree simulation.
 
 For example, consider the Kleenex program for the ranges benchmark case:
-\texttt{(/[ACGT]/\{5,15\} /TGCAAGCGTTAAT/)<k>}. Compiling only the pattern
-\texttt{/TGCAAGCGTTAAT/}, with errors allowed, will significantly reduce the
-size of the SST, but is expected to still provide a good indication for the
-probability of a match
+\texttt{(/[ACGT]/\{5,15\} /TGCAAGCGTTAAT/)<$k$>}, which could only be compiled
+for $k\leq1$. Compiling only the pattern \texttt{/TGCAAGCGTTAAT/}, with errors
+allowed, will significantly reduce the size of the SST, but is expected to
+still provide a good indication for the probability of a match
 
 As mentioned NR-grep, among others, uses this techniques and
 \cite{navarro2001nr} describes techniques for selecting an optimal subpattern
