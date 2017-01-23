@@ -1,5 +1,13 @@
 \section{Conclusion}
-As long as the patterns are simple enough so that Kleenex compiles a not too
-large executable, it seems to be able to compete with or outperform the other
+Our experiments show that as long as the patterns are simple enough and that
+error measure $k$ is low, so that the executables that Kleenex generates are
+not too large, it seems to be able to compete with or outperform the other
 tools we have tested, with NR-grep being the biggest difference, but it does
-have an unfair advantage in using the input with newlines.
+have an unfair advantage in using the input with newlines. However the compile
+times are quite unpractical with some pattern needing hours to compile, while
+it is also impossible to compile even fairly simple patterns to any more than
+$k = 3$, it serverly limits to real world pracitcality of approximate Kleenex
+in its current form. But if the SST size complexity with regards to $k$ could
+be reduced, in one or more ways, so as to bring down compile times and also
+executable size, it seems likely that approximate Kleenex could be a useful
+tool for doing high throuhput approximate string matching.
