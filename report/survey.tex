@@ -6,38 +6,36 @@ The approximate matching problem is in general more complicated than the exact m
 
 One of the classical solutions to approximate matching is to use dynamic programming. This method is simple and easy to be implemented by programming. It has been proved that if the alphabet is of a constant size, approximate string matching with $k$ errors can be solved in $O(kn)$ time where $n$ is the length of the text\cite{crochemore-jewels}. The investigation of the related theory background is heavy and can be left as future work, but we can still have a look at the basic idea.
 
-The idea of solving approximate matching with dynamic programming can be considered as filling in a matrix of size $m$ times $n$ where $m$ is the length of the pattern. From this matrix, we can find all the matching possibilities between the pattern and the text. We show an example of such a problem.
+The idea of solving string matching with errors using dynamic programming can be considered as filling in a matrix of size $m\times n$ where $m$ is the length of the pattern. We show an example of such a problem.
 
-\begin{example} \emph{Dynamic programming solving string matching problem with errors for pattern "abc" and text "abaabcb".}
+\begin{example} \emph{Dynamic programming solving approximate matching with Levishtein distance of 1 for pattern "abc" and text "abaabcb".}
+
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-		\hline
-		\textbf{}  & \textbf{}                & \textbf{a}               & \textbf{b}               & \textbf{a}               & \textbf{a}               & \textbf{b}               & \textbf{c}               & \textbf{b}               \\ \hline
-		& 0                        & 0                        & 0                        & 0                        & 0                        & 0                        & 0                        & 0                        \\ \hline
-		\textbf{a} & 1                        & 0 & 1                        & 0                        & {\color[HTML]{32CB00} 0} & 1                        & 1                        & 1                        \\ \hline
-		\textbf{b} & 2                        & 1                        & 0                        & 1                        & 1                        & {\color[HTML]{009901} 0} & 1                        & 1                        \\ \hline
-		\textbf{c} & {\color[HTML]{3166FF} 3} & {\color[HTML]{FFC702} 2} & {\color[HTML]{F56B00} 1} & {\color[HTML]{F56B00} 1} & {\color[HTML]{FFC702} 2} & {\color[HTML]{F56B00} 1} & {\color[HTML]{009901} 0} & {\color[HTML]{F56B00} 1} \\ \hline
-	\end{tabular}
+\hline
+\textbf{}                         & \textbf{}                & \textbf{a}               & \textbf{b}               & \textbf{a}               & \textbf{a}               & \textbf{b}               & \textbf{c}               & \textbf{b}               \\ \hline
+& 0                        & 1                        & 2                        & 3                        & 4                        & 5                        & 6                        & 7                        \\ \hline
+\textbf{a}                        & 1                        & \textbf{0} & 1                        & {\color[HTML]{333333} 2} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 4} & {\color[HTML]{333333} 5} & {\color[HTML]{333333} 6} \\ \hline
+\textbf{b}                        & 2                        & 1                        &\textbf{0}                       & {\color[HTML]{333333} 1} & {\color[HTML]{333333} 2} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 4} & {\color[HTML]{333333} 5} \\ \hline
+{\color[HTML]{333333} \textbf{c}} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 2} & \textbf{\color[HTML]{32CB00} 1} & {\color[HTML]{32CB00} 1} & {\color[HTML]{333333} 2} & {\color[HTML]{000000} 3} & {\color[HTML]{333333} 3} & {\color[HTML]{333333} 4} \\ \hline
+\end{tabular}
 \end{table}
+	\label{fig:dynap}
+ \end{example}
+ 
+If we look at the last row of this matrix, the values from left to right show us how the Levinshtein distance changes when we read into each character of the text. Note that the path downward between two elements can be considered as an insertion, and moving right like a deletion and a diganol increase is a repleacement and no increase means a match. If we search for a matching of Levishtein distance of 1, the program reports a match when we read the second or the third charachter of the text.
 
-	\label{fig-dynpro}
-\end{example}
+Dynamic programming is simple, practical and easy to be extended to support more abilities such as specifying the number of each type of errors, which may be implemented by finding a particular path in the matrix. For instance, in Example \ref{fig:dynap},  the numbers in bold show a path of one insertion, that is, two 0s in diagnol stands for two matches and one downwards mean an insertion. So with some backtracking techniques, it is possible to be implemented. Our experiment tools such as Python and Scan\_for\_matches are probably based on this method. As there is no documentation or describution of what the approximate matching algorithms are implemented in these tools, this could be future work for investegation.
 
+\subsection{Automaton simulation}
+Another classical one is to use automaton simulation. The algortihm BNDM  (we will explain later) over which NR-grep is built is basically a simulation of an NFA. 
 
-
-
-\subsection{Autamata simulation}
-Another classical one is automata simulation. The algortihm BNDM  (we will explain later) over which NR-grep is built is basically a simulation of an NFA. 
-
-
-
-\subsection{NR-grep}
+From the experiment results shown in the previous section, we find NR-grep has the best performance in average in our various test cases. This is not surprising because NR-grep implemented different efficient algorithms for various pattern matching problems as well as a good software design. We present some important techniques of approximate matching as well as efficient matching algorithms that used in NR-grep.
 
 \subsubsection{Bit-parallelism}
-From the experiment results shown in the previous section, we can say in general NR-grep has the best performance in average in our various test cases. This is not surprising because NR-grep implemented different efficient algorithms for various pattern matching problems as well as a good software design. From this tool's perspective, the patterns are classified into three levels: simple patterns, extended patterns and regular experssions. Different algorithms are applied to different levels of patterns to make sure that the problem can be solved in the most efficient way. 
 
-We now show the idea of how NR-grep solves the approximate matching in an efficient way. The name of this tool comes from "nondeterministic reverse $grep$", which indicates this tool can simulate NFAs instead of converting them to DFAs. The algorithm of  simulating NFAs used in NR-grep is called $Shift-Or$. This algorithm is based on an approach called $bit-parallelism$, which takes advantage of the parallelism of the bit operations inside a computer word. A variant of Shift-Or that is easier to explain is $Shift-And$ algorithm, which also based on $bit-parallelism$. We first show how this algorithm works. 
+From NR-grep's perspective, the patterns are classified into three levels: simple patterns, extended patterns and regular experssions. Different patterns are applied  different algorithms to make sure that the problem can be solved in the most efficient way. The name of this tool comes from "nondeterministic reverse $grep$", which indicates this tool can simulate NFAs instead of converting them to DFAs. The algorithm of  simulating NFAs used in NR-grep is called $Shift-Or$. This algorithm is based on an approach called $bit-parallelism$, which takes advantage of the parallelism of the bit operations inside a computer word. A variant of Shift-Or that is easier to explain is $Shift-And$ algorithm, which also based on $bit-parallelism$. We first show how this algorithm works. 
 
 Given a pattern $pat$ of length $m$,  and a text $txt$ of length $n$ and the alphabet set is $\Sigma$ with a size $|\Sigma|$. First we build a table $B$ in which for each character in $\Sigma$ stores a bit mask $b_m...b_1$. Each bit mask in the table has a length of $m$. For a character $char$ in $pat$ with an index $i$ (1-indexed), set the $m-i-1$ bit of the mask in B[$char$]. The following example shows a bit mask table for the pattern "abc" assuming $\Sigma$ = {a,b,c,d}.
 
@@ -165,12 +163,3 @@ As we can see from the above updating formulas, each updating is just bitwise op
 
 \subsubsection{Splitting technique}
 An important property of $k$ errors approximate matching has been found that if we split the pattern into $k+1$ pieces then there must be at least one piece that has no error\cite{wu1992}. Note that this property only works for an error model of insertion, replacement and deletion. With this property, the approximate matching problem can be reduced to the multi-pattern matching problem with an extra verification, which is to check if the surrounding text of these pieces can be a match of the whole pattern that allows $k$ errors. This technique is also employed in NR-grep. 
-
-
- 
-\subsection{Python (\texttt{regex})}
-
-\subsection{Scan For Matches}
-
-
-\subsection{Approximate Kleenex}
