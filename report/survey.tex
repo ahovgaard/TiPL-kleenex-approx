@@ -1,19 +1,35 @@
 \section{Survey of approximate matching techniques}
-Approximate matching is in general more complicated than exact matching. We can consider exact matching problems as a subset of approximate matching problems with an error of 0. The problem set will also change a lot if we use a different definition of the error metric or the type of errors. The time complexity of many efficient exact matching algorithms that work as simulating a DFA, such as the Knuth–Morris–Pratt algorithm, will become exponential as the number of errors grows if we just convert the NFA of the pattern into a DFA to be adapted in these algorithms. 
+The approximate matching problem is in general more complicated than the exact matching problem. We can consider exact matching problems as a subset of approximate matching problems with an error of 0. We should note that the problem set will also change a lot if we use a different definition of error metric(such as Levenshtein distance or Hamming distance) or different models of errors (such as insertation, deletion or transition). The time complexity of many efficient exact matching algorithms that work as simulating a DFA, such as the Knuth–Morris–Pratt algorithm, will become exponential as the number of errors grows if we just convert the NFA that accepts the pattern with errors into a DFA to be applied in these algorithms. 
 
-\begin{comment}
 
 \subsection{Dynamic programming}
 
-One of the classical solutions to approximate matching problem is to use dynamic programming. This method is simple and easy to be implemented by programming. 
+One of the classical solutions to approximate matching is to use dynamic programming. This method is simple and easy to be implemented by programming. It has been proved that if the alphabet is of a constant size, approximate string matching with $k$ errors can be solved in $O(kn)$ time where $n$ is the length of the text\cite{crochemore-jewels}. The investigation of the related theory background is heavy and can be left as future work, but we can still have a look at the basic idea.
 
-% TODO: some examples maybe
+The idea of solving approximate matching with dynamic programming can be considered as filling in a matrix of size $m$ times $n$ where $m$ is the length of the pattern. From this matrix, we can find all the matching possibilities between the pattern and the text. We show an example of such a problem.
+
+\begin{example} \emph{Dynamic programming solving string matching problem with errors for pattern "abc" and text "abaabcb".}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+		\hline
+		\textbf{}  & \textbf{}                & \textbf{a}               & \textbf{b}               & \textbf{a}               & \textbf{a}               & \textbf{b}               & \textbf{c}               & \textbf{b}               \\ \hline
+		& 0                        & 0                        & 0                        & 0                        & 0                        & 0                        & 0                        & 0                        \\ \hline
+		\textbf{a} & 1                        & 0 & 1                        & 0                        & {\color[HTML]{32CB00} 0} & 1                        & 1                        & 1                        \\ \hline
+		\textbf{b} & 2                        & 1                        & 0                        & 1                        & 1                        & {\color[HTML]{009901} 0} & 1                        & 1                        \\ \hline
+		\textbf{c} & {\color[HTML]{3166FF} 3} & {\color[HTML]{FFC702} 2} & {\color[HTML]{F56B00} 1} & {\color[HTML]{F56B00} 1} & {\color[HTML]{FFC702} 2} & {\color[HTML]{F56B00} 1} & {\color[HTML]{009901} 0} & {\color[HTML]{F56B00} 1} \\ \hline
+	\end{tabular}
+\end{table}
+
+	\label{fig-dynpro}
+\end{example}
+
+
 
 
 \subsection{Autamata simulation}
 Another classical one is automata simulation. The algortihm BNDM  (we will explain later) over which NR-grep is built is basically a simulation of an NFA. 
 
-\end{comment}
 
 
 \subsection{NR-grep}
@@ -128,6 +144,7 @@ Consider the pattern "ab" allowing one error, we can build an NFA to simulate it
 	\end{tikzpicture}
 \end{center}
 \caption{An NFA accepting the pattern "ab" with at most one error. The label $\epsilon,\Sigma$ on the diagnoal arrows means both $\epsilon$ and $\Sigma$ can be accepted.}
+\label{fig:nfa"ab"}
 \end{figure}
  
 In Figure \ref{fig:nfa"ab"}, the last state of each row stands for a state that accepts $r$ errors where $r$ is the index of the row (0-indexed). That is, in our example, the state $q_2$ accepts "ab" with no error and $q_2'$  with exact one error. The veritcal arrows represent an insertion, and the $\epsilon$ and $\Sigma$ on the diagonal arrows stand for a deletion and a replacement respectively. We can image that we could build an NFA for any other patterns with $k$ errors in such manner iteratively. It is worth noting that the number of states in the NAF built in such a way increases linearly with the number of errors.
@@ -141,9 +158,15 @@ for \ &i \in 1...k \ do:  \\
 	& R_i' \leftarrow ((R_i << 1) \ \& \ B[t_j] ) \ |\ R_{i-1} \ | \ (R_{i-1} << 1 ) \ |\ (R_{i-1}' << 1)
 \end{align*}
 
-These formulars show us one case of how bit-parallelism simulate an NFA. $R_0'$ is updated just as we have shown in $Shift-And$. In the formular for updating $R_i'$, the first element (i.e., $((R_i << 1) \ \& \ B[t_j] ) $ ) is similar to $Shitf-And$ but removed the OR operation with $O^{m-1}$ because it can not be an initial state that has a self-loop. The second is the old value of its upper row, which corresponds to a vertial arrow. Similarly, the third stands for a replacement and the fourth a deletion. When we detect that $R_k \& 10^{m-1}$ is set, a match is reported.  
+These formulars show us one case of how bit-parallelism simulate an NFA. $R_0'$ is updated just as we have shown in $Shift-And$. In the formular for updating $R_i'$, the first element (i.e., $((R_i << 1) \ \& \ B[t_j] ) $ ) is similar to $Shitf-And$ but removed the OR operation with $O^{m-1}$ because it can not be an initial state that has a self-loop. The second is the old value of its upper row, which corresponds to a vertial arrow. Similarly, the third stands for a replacement and the fourth a deletion. When we detect that $R_k \& 10^{m-1}$ is not zero, a match is reported.  
 
-As we can see from the above updating formulas, each updating is just bitwise operation hence constant time. So this simulation should be linear time complexity with $k$.
+As we can see from the above updating formulas, each updating is just bitwise operation hence constant time. So this simulation should be only linear time complexity with $k$.
+ 
+
+\subsubsection{Splitting technique}
+An important property of $k$ errors approximate matching has been found that if we split the pattern into $k+1$ pieces then there must be at least one piece that has no error\cite{wu1992}. Note that this property only works for an error model of insertion, replacement and deletion. With this property, the approximate matching problem can be reduced to the multi-pattern matching problem with an extra verification, which is to check if the surrounding text of these pieces can be a match of the whole pattern that allows $k$ errors. This technique is also employed in NR-grep. 
+
+
  
 \subsection{Python (\texttt{regex})}
 
