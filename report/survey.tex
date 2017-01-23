@@ -29,7 +29,7 @@ If we look at the last row of this matrix, the filled values from left to right 
 
 Dynamic programming is simple, practical and easy to be extended to support more functionalities such as specifying the number of each type of errors, which can be implemented by finding a particular path in the matrix as we have shown above. It is likely that our experiment tools such as Python {\tt regex} and $\operatorname{Scan\_for\_matches}$ are based on this method as the time complexity appears close to linear. As there is no documentation or description of what the approximate matching algorithms are used in these tools, this can be left as future work for further investigation.
 
-\subsection{Automaton simulation}
+\subsection{Automaton simulation} \label{survey-NR-grep}
 Another classical approach is to use automaton simulation. The algorithm BNDM  (we will explain later) over which NR-grep is built is a simulation of an NFA. 
 
 From the experiment results shown in the previous section, we find NR-grep has the best performance in average in our various test cases. This is not surprising because NR-grep implemented different efficient algorithms for various pattern matching problems as well as a good software design. We present some important techniques of approximate matching as well as efficient matching algorithms that used in NR-grep.
