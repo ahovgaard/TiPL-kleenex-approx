@@ -85,7 +85,7 @@ With this new bit mask table, searching for the pattern "ab.", or more generally
  
 \subsubsection{BNDM algorithm}
 As we know, many efficient pattern matching algorithms, such as the Knuth–Morris–Pratt and the Boyer-Moore algorithm, employ a trick of skipping characters. It is possible to combine the $bit-parallelism$ approach with the ability of skipping characters to achieve an even more efficient algorithm. This idea is implemented by the $BNDM$ algorithm, which is used in NR-grep. BNDM uses $Shift-Or$ instead of $Shift-And$, a variant of $Shift-And$ that uses the following state updating formula:  
-$$ D' \leftarrow  (D \ \& \ B[t_j]) << 1 .$$ The algorithm that is adapted in BNDM for skipping charaters is from the Boyer-Moore or the BDM families\cite{crochemore94}.
+$$ D' \leftarrow  (D \ \& \ B[t_j]) << 1 .$$ The algorithm that is adapted in BNDM for skipping charaters is from the Boyer-Moore or the BDM families\cite{crochemore1994text}.
 
 
 \subsubsection{NFA simulation}
@@ -147,7 +147,7 @@ Consider the pattern "ab" allowing one error, we can build an NFA to simulate it
 \label{fig:nfa"ab"}
 \end{figure}
  
-In Figure \ref{fig:nfa"ab"}, the last state of each row stands for a state that accepts $r$ errors where $r$ is the index of the row (0-indexed). That is, in our example, the state $q_2$ accepts "ab" with no error and $q_2'$  with exact one error. The veritcal arrows represent an insertion, and the $\epsilon$ and $\Sigma$ on the diagonal arrows stand for a deletion and a replacement respectively. We can image that we could build an NFA for any other patterns with $k$ errors in such manner iteratively. It is worth noting that the number of states in the NAF built in such a way increases linearly with the number of errors.
+In Figure \ref{fig:nfa"ab"}, the last state of each row stands for a state that accepts $r$ errors where $r$ is the index of the row (0-indexed). That is, in our example, the state $q_2$ accepts "ab" with no error and $q_2'$  with exact one error. The vertical arrows represent an insertion, and the $\epsilon$ and $\Sigma$ on the diagonal arrows stand for a deletion and a replacement respectively. We can image that we could build an NFA for any other patterns with $k$ errors in such manner iteratively. It is worth noting that the number of states in the NAF built in such a way increases linearly with the number of errors.
 
 The technique stores each row in a machine word, say $R_i$ for row $i$ %just as we have shown in $Shift-And$.???
 The updating of these words are performed with the following formulars: 
