@@ -32,8 +32,9 @@ SST already only has 5 states, but the transition relation is quite complex,
 and there are some transitions that could be merged. If these optimizations
 could be generalized, they could probably help immensely on some of the program
 sizes and performance, since from a random state out of $2556$ in our Ranges
-pattern with $k = 1$ we see a single transition executing 82 lines of C code to
-make the transition, and the state overall being 650 lines long.
+pattern with $k = 1$ (which generated the longest C file) we see a single
+transition executing 82 lines of C code to make the transition, and the state
+overall being 650 lines long.
 
 \begin{figure}[!hb]
   \centering
