@@ -177,9 +177,12 @@ they could successfully be compiled.
 
 \subsubsection{Remarks}
 NR-grep is capable of searching in lines that are longer than $2^{16}$ but it
-outputs a bunch of warnings cluttering output, and also has some fluctuated runtimes
-as seen in Figure \ref{fig:nr-longline}. As we will discuss it in Section \ref{survey-NR-grep}, this is probobly because NR-grep uses different algorithms 
-for different level of patterns. 
+outputs a bunch of warnings cluttering output, which both makes it harder to
+time, but also introduces the variable of time being spent on writing all the
+output. NR-grep also has some fluctuated runtimes as seen in Figure
+\ref{fig:nr-longline}. As we will discuss it in Section \ref{survey-NR-grep},
+this is probobly because NR-grep uses different algorithms for different level
+of patterns.
 %This is without having checked if it finds the correct number of matches.
 
 \begin{figure}[!ht]
