@@ -75,11 +75,11 @@ time $\mathcal{O}(mn)$.
 
 %This utilizes the results of Theorem 1 and Corollary 1 in the POPL paper.
 
-Grathwohl et al.~\cite{grathwohl2016kleenex} also prove that for an oracle
-machine of size $m$, i.e. an NFST with $m$ transitions, there is a semantically
-equivalent SST with $\mathcal{O}(2^{m \log m})$ states. A corollary to this is
-that for a core Kleenex program with a corresponding transducer of size $m$,
-allowing approximate matches with up to $k$ errors, there is an SST with
+Grathwohl et al.~\cite{grathwohl2016kleenex} also prove that for an NFST of
+size $m$, i.e. with $m$ transitions, there is a semantically equivalent SST
+with $\mathcal{O}(2^{m \log m})$ states. A corollary to this is that for a core
+Kleenex program with a corresponding transducer of size $m$, allowing
+approximate matches with up to $k$ errors, there is an SST with
 $\mathcal{O}(2^{mk \log mk})$ states. Thus, the number of states in the SST
 resulting from the rewriting of core Kleenex and following determinization of
 the NFST, is exponential in $k$.
