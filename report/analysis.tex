@@ -24,8 +24,16 @@ Which translates to the following core Kleenex program,
     N6      &:= \texttt{.}\ N0\\
     N7      &:= \epsilon\\
 \end{align*}
-Figure \ref{fig:oft} and \ref{fig:sst} repectively show the OFT and SST of the
-program.
+Figure \ref{fig:oft} and Figure \ref{fig:sst} repectively show the OFT and SST
+of the program. So far we could see those two correspond correctly to the
+program. Though it is possibly to improve the OFT by hand, as seen in Figure
+\ref{fig:opt}, how this translates to the SST is a bit harder to see, as the
+SST already only has 5 states, but the transition relation is quite complex,
+and there are some transitions that could be merged. If these optimizations
+could be generalized, they could probably help immensely on some of the program
+sizes and performance, since from a random state out of $2556$ in our Ranges
+pattern with $k = 1$ we see a single transition executing 82 lines of C code to
+make the transition, and the state overall being 650 lines long.
 
 \begin{figure}[!hb]
   \centering
