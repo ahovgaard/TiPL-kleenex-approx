@@ -220,11 +220,28 @@ nonempty set, the single element of which will then be the new tag.
 
 
 
+\subsubsection{Scanning for subpatterns}
 
-% TODO: Talk about sub-pattern matching to speed up search, e.g. searching for
-% long literal part of pattern first before considering the whole pattern.
+Another potential idea for improving the performance of approximate Kleenex is
+to select subpatterns to search for, as also used in NR-grep and discussed
+in~\cite{navarro2001nr}. Specifically for approximate Kleenex, where the size
+of the SST appears to be a critical issue, compiling only a shorter and perhaps
+simpler subpattern to an SST could significantly reduce the determinization
+overhead. A good choice for a subpattern may be significantly simpler, yet its
+occurrence in the text could yield a high probability for an actual match of
+the whole pattern, depending on the assumptions made about the text. This
+potential match can then be verified, e.g. by simulating the transducer using
+path-tree simulation.
 
+For example, consider the Kleenex program for the ranges benchmark case:
+\texttt{(/[ACGT]/\{5,15\} /TGCAAGCGTTAAT/)<k>}. Compiling only the pattern
+\texttt{/TGCAAGCGTTAAT/}, with errors allowed, will significantly reduce the
+size of the SST, but is expected to still provide a good indication for the
+probability of a match
 
+As mentioned NR-grep, among others, uses this techniques and
+\cite{navarro2001nr} describes techniques for selecting an optimal subpattern
+under some simplifying assumptions about the text characters.
 
 %%% Local Variables:
 %%% mode: latex
